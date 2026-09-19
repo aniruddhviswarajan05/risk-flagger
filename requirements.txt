@@ -1,0 +1,3 @@
+# For local testing (local_test/ scripts) — not deployed to Lambda directly.
+yfinance==0.2.40
+boto3==1.34.144
