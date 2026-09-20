@@ -1,0 +1,8 @@
+runtime: python312
+
+entrypoint: python backend_server.py
+
+env_variables:
+  PORT: "8080"
+
+# Cloud Run default — no extra config needed

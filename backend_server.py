@@ -476,7 +476,7 @@ class RiskFlaggerHandler(BaseHTTPRequestHandler):
 
 
 def run(port=8000):
-    server_address = ("127.0.0.1", port)
+    server_address = ("0.0.0.0", port)
     load_users() # Ensure users db initialized
     httpd = HTTPServer(server_address, RiskFlaggerHandler)
     print(f"\n=======================================================")
@@ -491,5 +491,6 @@ def run(port=8000):
 
 
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    import os as _os
+    port = int(_os.environ.get("PORT", sys.argv[1] if len(sys.argv) > 1 else 8000))
     run(port)

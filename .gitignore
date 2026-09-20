@@ -10,3 +10,7 @@ node_modules/
 .sam/
 .vercel/
 scratch/
+
+# Local data files — not committed so they don't overwrite cloud container state
+local_history.json
+local_users.json
