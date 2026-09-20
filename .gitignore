@@ -8,6 +8,7 @@ venv/
 node_modules/
 .DS_Store
 .sam/
+.aws-sam/
 .vercel/
 scratch/
 

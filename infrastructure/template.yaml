@@ -1,0 +1,250 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Stock Risk Flagger - detects unusual volume patterns and explains
+  them in plain language using Bedrock. Built for First Commit hackathon.
+
+Parameters:
+  CallbackURL:
+    Type: String
+    Default: "http://localhost:5500/index.html"
+    Description: >
+      Your deployed frontend URL (the Amplify URL, e.g.
+      https://main.xxxxx.amplifyapp.com/). Update this and redeploy
+      AFTER your first Amplify deploy — see README Step 6b.
+  GoogleClientId:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: "OAuth client ID from Google Cloud Console. Leave blank to skip Google login."
+  GoogleClientSecret:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: "OAuth client secret from Google Cloud Console. Leave blank to skip Google login."
+
+Conditions:
+  HasGoogleIdP: !Not [!Equals [!Ref GoogleClientId, ""]]
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.11
+
+Resources:
+
+  # ---------------- Cognito: real user accounts ----------------
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: risk-flagger-users
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  # Only created if you supply real Google OAuth credentials (see README).
+  # Lets users hit "Continue with Google" and log in with their actual Gmail account.
+  UserPoolGoogleIdP:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Condition: HasGoogleIdP
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: "email openid profile"
+      AttributeMapping:
+        email: email
+        username: sub
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: risk-flagger-client
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      SupportedIdentityProviders: !If
+        - HasGoogleIdP
+        - ["COGNITO", "Google"]
+        - ["COGNITO"]
+      AllowedOAuthFlows: ["token"]
+      AllowedOAuthScopes: ["openid", "email", "profile"]
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs: [!Ref CallbackURL, "http://localhost:5500/index.html"]
+      LogoutURLs: [!Ref CallbackURL, "http://localhost:5500/index.html"]
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+
+
+  # Gives you the actual hosted login page URL (Cognito's built-in,
+  # real UI with email/password fields + Google button if configured)
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub "risk-flagger-${AWS::AccountId}"
+      UserPoolId: !Ref UserPool
+
+  # ---------------- API Gateway: explicit, so we can attach Cognito auth ----------------
+  RiskFlaggerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt UserPool.Arn
+        DefaultAuthorizer: CognitoAuthorizer
+
+  # ---------------- S3: watchlist storage ----------------
+  WatchlistBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "risk-flagger-watchlist-${AWS::AccountId}"
+      # Bucket name includes account ID since S3 bucket names must be globally unique
+
+  # ---------------- DynamoDB ----------------
+  StockFlagsTable:
+    Type: AWS::DynamoDB::Table
+
+    Properties:
+      TableName: StockFlags
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: ticker
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ticker
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      # Composite key: ticker (partition) + timestamp (sort).
+      # This makes GET /history able to return items newest-first
+      # without scanning the whole table.
+
+  # ---------------- Lambda: /analyze ----------------
+  AnalyzeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda_functions/analyze/
+      Handler: app.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref StockFlagsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StockFlagsTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: "*"
+      Events:
+        AnalyzeApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RiskFlaggerApi
+            Path: /analyze
+            Method: post
+        AnalyzeApiOptions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RiskFlaggerApi
+            Path: /analyze
+            Method: options
+            Auth:
+              Authorizer: NONE   # CORS preflight requests can't carry auth headers
+
+  # ---------------- Lambda: /history ----------------
+  HistoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda_functions/history/
+      Handler: app.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref StockFlagsTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref StockFlagsTable
+      Events:
+        HistoryApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RiskFlaggerApi
+            Path: /history
+            Method: get
+        HistoryApiOptions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RiskFlaggerApi
+            Path: /history
+            Method: options
+            Auth:
+              Authorizer: NONE
+
+  # ---------------- Lambda: scheduled watchlist check (EventBridge-triggered) ----------------
+  ScheduledCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda_functions/scheduled_check/
+      Handler: app.handler
+      Timeout: 60
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref StockFlagsTable
+          WATCHLIST_BUCKET: !Ref WatchlistBucket
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StockFlagsTable
+        - S3ReadPolicy:
+            BucketName: !Ref WatchlistBucket
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: "*"
+      Events:
+        # This Schedule event is what creates the EventBridge (CloudWatch Events)
+        # rule under the hood — SAM's shorthand for wiring up EventBridge.
+        WatchlistSchedule:
+          Type: Schedule
+          Properties:
+            # Every 15 minutes, 9:15am-3:30pm IST (roughly NSE market hours),
+            # Monday-Friday. Cron is in UTC, so IST 9:15-15:30 = UTC 3:45-10:00.
+            Schedule: "cron(*/15 4-10 ? * MON-FRI *)"
+            Description: "Auto-checks the watchlist during NSE market hours"
+            Enabled: true
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway base URL - use this in frontend/index.html"
+    Value: !Sub "https://${RiskFlaggerApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  WatchlistBucketName:
+    Description: "S3 bucket name - upload watchlist.json here"
+    Value: !Ref WatchlistBucket
+  CognitoDomain:
+    Description: "Cognito Hosted UI domain - use this in frontend/index.html"
+    Value: !Sub "https://risk-flagger-${AWS::AccountId}.auth.${AWS::Region}.amazoncognito.com"
+  CognitoClientId:
+    Description: "Cognito App Client ID - use this in frontend/index.html"
+    Value: !Ref UserPoolClient
+  CognitoUserPoolId:
+    Description: "Cognito User Pool ID (useful for the AWS Console if you need to manually verify/delete test users)"
+    Value: !Ref UserPool
+

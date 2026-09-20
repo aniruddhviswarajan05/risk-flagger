@@ -1,0 +1,9 @@
+{
+  "tickers": [
+    {"ticker": "RELIANCE", "market": "IN"},
+    {"ticker": "TATASTEEL", "market": "IN"},
+    {"ticker": "ADANIENT", "market": "IN"},
+    {"ticker": "AAPL", "market": "US"},
+    {"ticker": "TSLA", "market": "US"}
+  ]
+}

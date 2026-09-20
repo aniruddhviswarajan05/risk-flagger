@@ -1,5 +1,1603 @@
 [
   {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:41:24.556404+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ATHER",
+    "market": "US",
+    "timestamp": "2026-09-20T10:40:46.072174+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 8282138,
+      "avg_30d_volume": 3943875.0,
+      "volume_ratio": 2.1,
+      "threshold": 3.0,
+      "today_close": 508.55,
+      "price_change_pct": 6.38
+    },
+    "explanation": "Volume is within normal parameters (2.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:45.737723+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:28.770941+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:27.146296+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:26.844575+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:22.870138+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:20.787566+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:20.450156+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-20T10:35:20.205030+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:13.614106+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:12.963538+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:12.692084+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:11.977589+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:11.283353+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:11.087342+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:33:10.761291+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:31.082774+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:30.307215+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:30.084676+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:29.167415+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:28.636748+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:28.433831+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:32:28.064161+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:29.539220+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:28.532056+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:28.420399+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:27.872072+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:27.111424+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:26.908636+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:26.833332+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:24.863924+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:24.119908+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:23.935113+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:23.045015+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:22.458640+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:22.230323+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:31:21.603374+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:31.455189+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:30.791720+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:30.690972+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:30.063031+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:29.447131+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:29.360142+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:28.764919+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:28.238641+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:28.139715+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:27.637940+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:27.131777+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:26.906841+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:26.693131+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:26.056385+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:25.980888+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:25.585289+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:25.471094+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:24.925739+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:24.739953+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:24.129214+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:23.218810+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:22.983217+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:29:22.494742+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:26.800360+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:26.266178+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:26.080796+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:25.453282+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:24.845438+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:24.637918+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:28:24.299126+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:45.521031+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:44.973869+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:44.793485+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:44.238744+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:43.069416+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:42.826062+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:27:42.557188+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:58.922110+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:58.105978+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:57.862778+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:57.025668+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:56.339098+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:56.144806+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:55.582971+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:47.340825+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:46.684721+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:46.475358+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:45.846475+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:45.134347+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:44.928837+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:44.605070+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:34.339408+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:33.700299+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:32.948108+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:32.736627+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T19:17:32.535968+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
     "ticker": "MSFT",
     "market": "US",
     "timestamp": "2026-09-19T18:48:02.183666+00:00",
