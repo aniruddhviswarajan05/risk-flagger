@@ -1,0 +1,3912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SIGNAL — unusual market activity, explained</title>
+<meta name="description" content="Detects unusual trading volume on NSE-listed stocks and explains it in plain language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+:root{
+  --void:#050505;
+  --ink:#0b0b0d;
+  --glass:rgba(255,255,255,.045);
+  --glass-strong:rgba(255,255,255,.075);
+  --edge:rgba(255,255,255,.10);
+  --edge-bright:rgba(255,255,255,.20);
+  --amber:#ff9900;
+  --amber-dim:rgba(255,153,0,.16);
+  --cyan:#3fd8ff;
+  --cyan-dim:rgba(63,216,255,.14);
+  --text:#f2f3f5;
+  --muted:#8b8f98;
+  --faint:#5c606a;
+  --green:#4ade80;
+  --red:#ff6b5e;
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:9px;
+  --shell:1280px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--void);
+  color:var(--text);
+  font-family:"Space Grotesk",system-ui,-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+#field{position:fixed;inset:0;z-index:0;display:block}
+#grain{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.32;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>");
+  mix-blend-mode:overlay;
+}
+.vignette{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 85% 65% at 50% 42%,transparent 40%,rgba(5,5,5,.86) 100%);
+}
+#app-root{position:relative;z-index:2}
+
+.glass{
+  background:var(--glass);
+  border:1px solid var(--edge);
+  border-radius:var(--r-lg);
+  backdrop-filter:blur(22px) saturate(1.3);
+  -webkit-backdrop-filter:blur(22px) saturate(1.3);
+}
+
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px;
+}
+
+input{font-family:inherit;font-size:inherit;color:var(--text)}
+a{color:var(--cyan);text-underline-offset:3px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 22px;border-radius:999px;font-weight:600;letter-spacing:.005em;
+  transition:transform .12s cubic-bezier(.2,.8,.3,1),box-shadow .2s,background .2s,border-color .2s;
+  border:1px solid transparent;white-space:nowrap;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--amber);color:#150d00;box-shadow:0 0 0 rgba(255,153,0,0)}
+.btn-primary:hover{box-shadow:0 8px 34px rgba(255,153,0,.34)}
+.btn-ghost{background:var(--glass);border-color:var(--edge);color:var(--text)}
+.btn-ghost:hover{border-color:var(--edge-bright);background:var(--glass-strong)}
+.btn-sm{padding:8px 15px;font-size:13.5px}
+
+.pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 12px;border-radius:999px;background:var(--glass);
+  border:1px solid var(--edge);font-size:12.5px;color:var(--muted);
+}
+
+.dot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex:none}
+.dot.live{background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:ping 2.4s ease-out infinite}
+.dot.amber{background:var(--amber)}
+@keyframes ping{
+  0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}
+  70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}
+  100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
+}
+
+.shell{display:none;min-height:100svh}
+.shell.on{display:grid;grid-template-columns:238px minmax(0,1fr)}
+
+.rail{
+  position:sticky;top:0;height:100svh;padding:24px 16px;
+  display:flex;flex-direction:column;gap:6px;
+  border-right:1px solid var(--edge);background:rgba(8,8,10,.6);
+  backdrop-filter:blur(20px);
+}
+.rail .wordmark{padding:4px 10px 26px}
+.navlink{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  padding:10px 12px;border-radius:var(--r-sm);color:var(--muted);
+  font-size:14.5px;transition:background .15s,color .15s;
+}
+.navlink:hover{background:var(--glass);color:var(--text)}
+.navlink.on{background:var(--amber-dim);color:var(--amber)}
+
+.main{padding:26px clamp(18px,3vw,38px) 80px;min-width:0}
+
+.topbar{display:flex;gap:14px;align-items:center;margin-bottom:26px;flex-wrap:wrap}
+.search{
+  flex:1;min-width:230px;display:flex;align-items:center;gap:10px;
+  padding:11px 16px;border-radius:999px;background:var(--glass);
+  border:1px solid var(--edge);transition:border-color .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.search:focus-within{border-color:rgba(255,153,0,.5);box-shadow:0 0 0 4px rgba(255,153,0,.08)}
+.search input{flex:1;background:none;border:0;outline:none;min-width:0}
+.search input::placeholder{color:var(--faint)}
+
+h2.pane-title{font-size:26px;font-weight:600;letter-spacing:-.015em;margin:0}
+.pane-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:6px;flex-wrap:wrap}
+.pane-sub{color:var(--muted);font-size:14px;margin:6px 0 24px;max-width:66ch}
+.pane{display:none}
+.pane.on{display:block;animation:rise .34s cubic-bezier(.22,.8,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(282px,1fr));gap:16px}
+
+/* ========== COMMAND PALETTE ========== */
+.cmd-palette{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
+  display:none;align-items:flex-start;justify-content:center;padding-top:60px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+}
+.cmd-palette.active{display:flex}
+.cmd-inner{
+  width:100%;max-width:580px;background:var(--glass);border:1px solid var(--edge);
+  border-radius:var(--r-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.cmd-input{
+  padding:14px 20px;border:0;background:none;color:var(--text);width:100%;
+  font-size:16px;font-family:inherit;outline:none;border-bottom:1px solid var(--edge);
+}
+.cmd-results{
+  max-height:400px;overflow-y:auto;
+}
+.cmd-item{
+  padding:12px 20px;border-bottom:1px solid var(--edge);cursor:pointer;
+  transition:background .15s;display:flex;gap:12px;align-items:center;
+}
+.cmd-item:hover{background:var(--glass-strong)}
+.cmd-item.selected{background:var(--amber-dim)}
+.cmd-icon{width:20px;height:20px;opacity:.6}
+
+/* ========== WATCHLIST (DRAGGABLE) ========== */
+.watchlist-container{display:flex;flex-direction:column;gap:8px}
+.watch-item{
+  display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:12px;background:var(--glass);border:1px solid var(--edge);border-radius:var(--r-md);
+  cursor:grab;transition:all .15s;user-select:none;
+}
+.watch-item:active{cursor:grabbing;transform:scale(1.02);background:var(--glass-strong)}
+.watch-item.dragging{opacity:.5;background:var(--amber-dim)}
+.watch-drag-handle{
+  display:flex;flex-direction:column;gap:3px;opacity:.5;
+}
+.watch-drag-handle span{width:4px;height:4px;background:currentColor;border-radius:50%}
+.watch-info{min-width:0}
+.watch-symbol{font-weight:600;font-size:14px}
+.watch-price{color:var(--muted);font-size:12px}
+.watch-change{font-size:13px;font-weight:600}
+.watch-change.up{color:var(--green)}
+.watch-change.down{color:var(--red)}
+
+/* ========== 3D EARTH CANVAS ========== */
+#earth-canvas{width:100%;height:100%;display:block;border-radius:var(--r-lg)}
+.earth-container{
+  position:relative;width:100%;height:480px;
+  background:radial-gradient(ellipse at 50% 50%, #0c1424 0%, #05070c 100%);
+  border:1px solid var(--edge);border-radius:var(--r-lg);overflow:hidden;
+}
+
+/* ========== HEATMAP ========== */
+.heatmap-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:8px;
+  padding:16px;background:var(--glass);border:1px solid var(--edge);border-radius:var(--r-lg);
+}
+.heatmap-cell{
+  aspect-ratio:1;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid transparent;
+}
+.heatmap-cell:hover{transform:scale(1.08);border-color:var(--cyan)}
+
+/* ========== CANDLESTICK CHART ========== */
+.chart-container{
+  position:relative;height:300px;background:var(--glass);border:1px solid var(--edge);
+  border-radius:var(--r-lg);padding:16px;
+}
+
+/* ========== MARKET PULSE ========== */
+.pulse-circle{
+  width:120px;height:120px;border-radius:50%;border:2px solid var(--amber);
+  display:flex;align-items:center;justify-content:center;margin:auto;
+  animation:pulse-wave 2s ease-out infinite;position:relative;
+}
+.pulse-circle::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:2px solid rgba(255,153,0,.3);animation:pulse-expand 2s ease-out infinite;
+}
+@keyframes pulse-expand{
+  0%{transform:scale(1);opacity:1}
+  100%{transform:scale(1.4);opacity:0}
+}
+@keyframes pulse-wave{
+  0%{box-shadow:0 0 0 0 rgba(255,153,0,.4)}
+  50%{box-shadow:0 0 0 20px rgba(255,153,0,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,153,0,0)}
+}
+
+/* ========== PRESENTATION MODE ========== */
+.presentation-mode{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;
+  background:var(--void);display:none;
+}
+.presentation-mode.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.presentation-content{
+  width:100%;height:100%;padding:60px;display:flex;flex-direction:column;
+  gap:40px;justify-content:center;text-align:center;max-width:1400px;margin:auto;
+}
+.presentation-title{font-size:64px;font-weight:700;letter-spacing:-.02em;color:var(--amber)}
+.presentation-subtitle{font-size:32px;color:var(--muted);margin-top:20px}
+.presentation-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;
+  margin-top:40px;
+}
+.presentation-card{
+  background:var(--glass);border:1px solid var(--amber-dim);border-radius:var(--r-lg);
+  padding:24px;transition:all .3s;
+}
+.presentation-card:hover{transform:translateY(-8px);box-shadow:0 12px 40px rgba(255,153,0,.2)}
+
+/* ========== MICRO-INTERACTIONS & HAPTICS-PAIRED ANIMATIONS ========== */
+.btn{position:relative;overflow:hidden}
+.ripple{
+  position:absolute;border-radius:50%;background:rgba(255,255,255,.45);
+  transform:scale(0);animation:ripple-out .55s ease-out forwards;pointer-events:none;
+}
+.btn-primary .ripple{background:rgba(0,0,0,.22)}
+@keyframes ripple-out{to{transform:scale(2.6);opacity:0}}
+.btn:active,.navlink:active,.signal-card:active,.heatmap-cell:active,.watch-item:active,.close-x:active{transform:scale(.96)}
+
+.navlink{position:relative}
+.navlink.on::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:60%;border-radius:3px;background:var(--amber);
+  animation:navpop .28s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes navpop{from{height:0;opacity:0}to{height:60%;opacity:1}}
+
+@keyframes pop-in{
+  0%{opacity:0;transform:scale(.94) translateY(8px)}
+  65%{opacity:1;transform:scale(1.012)}
+  100%{transform:scale(1) translateY(0)}
+}
+.pop-in{animation:pop-in .32s cubic-bezier(.22,.8,.3,1) both}
+
+@keyframes shake{
+  10%,90%{transform:translateX(-1px)}
+  20%,80%{transform:translateX(2px)}
+  30%,50%,70%{transform:translateX(-5px)}
+  40%,60%{transform:translateX(5px)}
+}
+.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
+
+.watch-item{transition:transform .18s cubic-bezier(.22,.8,.3,1),background .18s,border-color .18s,opacity .18s}
+.watch-item.drop-settle{animation:settle .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes settle{0%{transform:scale(1.035)}100%{transform:scale(1)}}
+
+.heatmap-cell.selected{
+  outline:2px solid var(--cyan);outline-offset:-2px;animation:cellpop .32s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes cellpop{0%{transform:scale(.9)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+
+/* animated toggle switches (settings) */
+.switch{position:relative;display:inline-block;width:42px;height:24px;flex:none}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:1}
+.switch .track{
+  position:absolute;inset:0;background:var(--glass-strong);border:1px solid var(--edge);
+  border-radius:999px;transition:background .22s,border-color .22s;
+}
+.switch .thumb{
+  position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:var(--muted);transition:transform .26s cubic-bezier(.34,1.56,.64,1),background .22s;
+}
+.switch input:checked ~ .track{background:var(--amber-dim);border-color:rgba(255,153,0,.5)}
+.switch input:checked ~ .thumb{transform:translateX(18px);background:var(--amber)}
+.switch input:focus-visible ~ .track{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* toast stack */
+#toast-stack{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:10050;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
+}
+.toast{
+  padding:11px 18px;border-radius:999px;background:rgba(15,15,17,.94);border:1px solid var(--edge-bright);
+  font-size:13.5px;color:var(--text);box-shadow:0 10px 30px rgba(0,0,0,.45);
+  animation:toast-in .32s cubic-bezier(.22,.9,.3,1.2) both;display:flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.toast.leaving{animation:toast-out .2s ease-in forwards}
+@keyframes toast-in{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes toast-out{to{opacity:0;transform:translateY(6px) scale(.96)}}
+
+/* staggered entrance for list/grid children */
+.stagger>*{animation:stag-in .4s cubic-bezier(.22,.8,.3,1) both}
+@keyframes stag-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*:nth-child(1){animation-delay:.02s}
+.stagger>*:nth-child(2){animation-delay:.06s}
+.stagger>*:nth-child(3){animation-delay:.10s}
+.stagger>*:nth-child(4){animation-delay:.14s}
+.stagger>*:nth-child(5){animation-delay:.18s}
+.stagger>*:nth-child(6){animation-delay:.22s}
+.stagger>*:nth-child(7){animation-delay:.26s}
+.stagger>*:nth-child(8){animation-delay:.30s}
+.stagger>*:nth-child(n+9){animation-delay:.33s}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+
+/* ========== UTILITY ========== */
+.dragging-overlay{pointer-events:none}
+
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr!important}
+  .rail{width:100%;height:auto;border-bottom:1px solid var(--edge);border-right:none}
+  .presentation-content{padding:30px;font-size:.8em}
+  .presentation-title{font-size:40px}
+  .presentation-subtitle{font-size:24px}
+}
+
+/* ========== LANDING ========== */
+#landing{min-height:100svh;display:flex;flex-direction:column}
+#landing.hidden{display:none}
+.landing-nav{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:20px clamp(18px,4vw,56px);border-bottom:1px solid var(--edge);
+}
+.landing-nav .links{display:flex;gap:28px;font-size:14px;color:var(--muted)}
+.landing-nav .links a{color:var(--muted);text-decoration:none}
+.landing-nav .links a:hover{color:var(--text)}
+.landing-hero{
+  flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;
+  align-items:center;padding:56px clamp(18px,4vw,56px) 40px;max-width:1280px;margin:0 auto;width:100%;
+}
+.landing-hero h1{
+  font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-.02em;margin:0 0 20px;font-weight:600;
+}
+.landing-hero h1 .accent{color:var(--amber)}
+.landing-hero p{color:var(--muted);font-size:16.5px;max-width:46ch;margin:0 0 28px}
+.landing-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
+.landing-stats{display:flex;gap:28px;flex-wrap:wrap;border-top:1px solid var(--edge);padding-top:22px}
+.landing-stats div{font-size:12px;color:var(--faint)}
+.landing-stats b{display:block;color:var(--text);font-size:13.5px;font-weight:600;margin-bottom:2px}
+.orb-wrap{position:relative;aspect-ratio:1;max-width:520px;justify-self:end;width:100%}
+.orb-wrap canvas{width:100%!important;height:100%!important;border-radius:50%}
+.orb-badge{
+  position:absolute;top:10%;right:-4%;padding:10px 14px;border-radius:var(--r-md);
+  font-size:12px;
+}
+.orb-badge b{display:block;color:var(--amber);font-size:15px}
+
+/* ========== STAT TILES ========== */
+.stat-tile{padding:18px 20px;border-radius:var(--r-lg)}
+.stat-tile .num{font-size:26px;font-weight:700;margin:4px 0 2px;font-family:"IBM Plex Mono",monospace}
+.stat-tile .lbl{font-size:12.5px;color:var(--muted)}
+
+/* ========== RADAR ========== */
+.radar{
+  position:relative;width:180px;height:180px;border-radius:50%;margin:0 auto;
+  background:radial-gradient(circle,rgba(255,153,0,.07) 0%,transparent 70%);
+  border:1px solid var(--edge);
+}
+.radar::before,.radar::after{
+  content:'';position:absolute;border-radius:50%;border:1px solid var(--edge);
+}
+.radar::before{inset:22%}
+.radar::after{inset:44%}
+.radar-sweep{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  animation:sweep 3.2s linear infinite;
+}
+.radar-sweep::before{
+  content:'';position:absolute;inset:0;
+  background:conic-gradient(from 0deg,rgba(255,153,0,.55),transparent 28%);
+}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.radar-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+
+.scan-row{
+  display:flex;align-items:center;justify-content:space-between;padding:9px 4px;
+  border-bottom:1px solid var(--edge);font-size:13.5px;
+}
+.scan-row:last-child{border-bottom:0}
+.scan-status{font-size:12px;color:var(--faint)}
+.scan-status.done{color:var(--green)}
+.scan-status.active{color:var(--amber)}
+
+/* ========== SIGNAL CARDS ========== */
+.signal-card{
+  padding:16px;border-radius:var(--r-lg);cursor:pointer;transition:border-color .15s,transform .15s;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.signal-card:hover{border-color:var(--amber-dim);transform:translateY(-2px)}
+.signal-mult{font-size:22px;font-weight:700;color:var(--amber);font-family:"IBM Plex Mono",monospace}
+
+/* ========== STOCK DETAIL ========== */
+.detail-overlay{
+  position:fixed;inset:0;z-index:9500;background:rgba(2,2,3,.72);backdrop-filter:blur(6px);
+  display:none;align-items:flex-start;justify-content:center;padding:min(6vh,60px) 18px 40px;overflow-y:auto;
+}
+.detail-overlay.active{display:flex}
+.detail-panel{
+  width:100%;max-width:860px;border-radius:var(--r-lg);overflow:hidden;
+}
+.detail-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px;border-bottom:1px solid var(--edge)}
+.detail-tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--edge);overflow-x:auto}
+.detail-tab{padding:13px 14px;font-size:13.5px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.detail-tab.on{color:var(--text);border-color:var(--amber)}
+.detail-body{padding:22px 24px}
+.detail-tabpane{display:none}
+.detail-tabpane.on{display:block;animation:rise .28s cubic-bezier(.22,.8,.3,1)}
+.insight-box{padding:18px;border-radius:var(--r-md);margin-bottom:18px}
+.why-list{display:flex;flex-direction:column;gap:10px;font-size:13.5px}
+.why-list li{display:flex;gap:10px;list-style:none}
+.close-x{width:32px;height:32px;border-radius:50%;background:var(--glass);display:flex;align-items:center;justify-content:center;flex:none}
+.close-x:hover{background:var(--glass-strong)}
+
+/* ========================================================
+   SPATIAL HAND GESTURE MODE
+   ======================================================== */
+.spatial-toggle{position:relative}
+.spatial-toggle .st-dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none;transition:background .2s,box-shadow .2s}
+.spatial-toggle.active .st-dot{background:var(--cyan);box-shadow:0 0 8px 1px var(--cyan)}
+
+#spatial-video{position:fixed;top:-2px;left:-2px;width:2px;height:2px;opacity:0;pointer-events:none;z-index:-1}
+
+#spatial-cursor-layer{position:fixed;inset:0;z-index:99990;pointer-events:none;display:none}
+#spatial-cursor-layer.on{display:block}
+
+#spatial-hud{
+  position:fixed;top:16px;right:16px;z-index:99992;display:none;
+  padding:12px 16px;border-radius:var(--r-md);min-width:168px;
+  background:rgba(8,8,10,.72);border:1px solid var(--edge);backdrop-filter:blur(16px);
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;color:var(--muted);
+}
+#spatial-hud.on{display:block}
+#spatial-hud .sh-title{display:flex;align-items:center;gap:7px;color:var(--cyan);font-weight:600;margin-bottom:8px;font-size:11.5px}
+#spatial-hud .sh-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:ping 2.4s ease-out infinite}
+#spatial-hud .sh-row{display:flex;justify-content:space-between;gap:14px;padding:3px 0}
+#spatial-hud .sh-row b{color:var(--text);font-weight:600}
+#spatial-hud .sh-row.warn b{color:var(--amber)}
+#spatial-hud .sh-row.bad b{color:var(--red)}
+#spatial-hud .sh-exit{margin-top:10px;width:100%;text-align:center;padding:6px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);color:var(--text);font-size:11px;letter-spacing:.03em}
+#spatial-hud .sh-exit:hover{background:var(--glass-strong)}
+
+/* full-screen dim used during transitions, never fully hides the app */
+.spatial-scrim{
+  position:fixed;inset:0;z-index:99991;display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:18px;text-align:center;padding:24px;
+  background:rgba(4,4,5,.62);backdrop-filter:blur(10px) saturate(1.1);
+  transition:opacity .35s ease;
+}
+.spatial-scrim.on{display:flex}
+.spatial-scrim .ring{
+  width:74px;height:74px;border-radius:50%;position:relative;
+  background:conic-gradient(from 0deg,var(--amber),transparent 65%,var(--amber));
+  animation:spin-ring 1.1s linear infinite;
+}
+.spatial-scrim .ring::after{content:'';position:absolute;inset:6px;border-radius:50%;background:var(--void)}
+@keyframes spin-ring{to{transform:rotate(360deg)}}
+.spatial-scrim .status-line{font-family:"IBM Plex Mono",monospace;letter-spacing:.09em;font-size:13px;color:var(--cyan);text-transform:uppercase;min-height:18px}
+.spatial-scrim .status-sub{color:var(--muted);font-size:13px;max-width:44ch}
+.spatial-scrim .scrim-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.spatial-scrim .skip-link{color:var(--faint);font-size:12px;margin-top:2px;text-decoration:underline;cursor:pointer}
+
+/* spatial cursor itself, drawn as DOM for crisp rendering + easy theming */
+.spatial-cursor{
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--amber);box-shadow:0 0 16px 2px rgba(255,153,0,.55),0 0 0 5px rgba(255,153,0,.08);
+  transform:translate(-50%,-50%);transition:width .12s,height .12s,border-color .12s,background .12s;
+  pointer-events:none;
+}
+.spatial-cursor::after{
+  content:'';position:absolute;inset:9px;border-radius:50%;background:var(--amber);opacity:.85;
+  transition:opacity .12s,inset .12s;
+}
+.spatial-cursor.searching{border-color:var(--faint);box-shadow:none;opacity:.4}
+.spatial-cursor.searching::after{opacity:0}
+.spatial-cursor.pinching{width:16px;height:16px;border-color:var(--cyan);box-shadow:0 0 20px 4px rgba(63,216,255,.6)}
+.spatial-cursor.pinching::after{inset:5px;background:var(--cyan)}
+.spatial-cursor.hover-target{border-color:#fff;box-shadow:0 0 22px 4px rgba(255,255,255,.4)}
+
+.spatial-hover-ring{
+  position:absolute;border-radius:14px;pointer-events:none;
+  border:2px solid var(--cyan);box-shadow:0 0 18px rgba(63,216,255,.3);
+  transition:top .08s,left .08s,width .08s,height .08s,opacity .12s;
+}
+
+/* highlight applied to whatever real DOM element the spatial cursor is over */
+.spatial-hit{outline:2px solid var(--cyan) !important;outline-offset:2px;border-radius:var(--r-sm)}
+
+.spatial-ripple{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  border:2px solid var(--amber);transform:translate(-50%,-50%);pointer-events:none;
+  animation:spatial-ripple .5s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes spatial-ripple{to{width:70px;height:70px;opacity:0;border-width:1px}}
+
+.spatial-streak{
+  position:absolute;top:50%;height:3px;border-radius:3px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  transform:translateY(-50%);animation:spatial-streak .4s ease-out forwards;
+}
+@keyframes spatial-streak{from{opacity:1}to{opacity:0}}
+
+/* palm radial menu */
+#spatial-palm-menu{
+  position:fixed;z-index:99993;display:none;flex-direction:column;gap:6px;
+  transform:translate(-50%,-50%);padding:10px;border-radius:16px;
+  background:rgba(8,8,10,.85);border:1px solid var(--edge-bright);backdrop-filter:blur(18px);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);min-width:190px;
+  animation:rise .2s cubic-bezier(.22,.8,.3,1);
+}
+#spatial-palm-menu.on{display:flex}
+#spatial-palm-menu button{
+  padding:11px 14px;border-radius:10px;text-align:left;color:var(--text);font-size:13.5px;
+  display:flex;align-items:center;gap:10px;
+}
+#spatial-palm-menu button:hover,#spatial-palm-menu button.spatial-hit{background:var(--amber-dim);color:var(--amber)}
+
+/* permission-denied / unavailable modal */
+#spatial-permission-modal .status-sub{margin-bottom:4px}
+
+@media (max-width:760px){
+  #spatial-hud{top:auto;bottom:16px;right:16px;min-width:150px}
+}
+
+body.spatial-active{cursor:none}
+body.spatial-active .rail,body.spatial-active .main{cursor:none}
+
+/* ========== TICKER SEARCH (Live Signals pane) ========== */
+.tickerbox{
+  flex:1;min-width:220px;padding:11px 16px;border-radius:999px;background:var(--glass);
+  border:1px solid var(--edge);outline:none;color:var(--text);transition:border-color .2s,box-shadow .2s;
+}
+.tickerbox::placeholder{color:var(--faint)}
+.tickerbox:focus{border-color:rgba(255,153,0,.5);box-shadow:0 0 0 4px rgba(255,153,0,.08)}
+.market-toggle{display:inline-flex;background:var(--glass);border:1px solid var(--edge);border-radius:999px;padding:3px;gap:2px;flex:none}
+.market-opt{padding:8px 14px;border-radius:999px;font-size:12.5px;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+.market-opt.on{background:var(--amber-dim);color:var(--amber)}
+.market-opt:hover:not(.on){background:var(--glass-strong);color:var(--text)}
+#ticker-search-status.ok{color:var(--green)}
+#ticker-search-status.err{color:var(--red)}
+#ticker-search-status.pending{color:var(--muted)}
+
+/* ========== AUTHENTICATION SCREEN ========== */
+#auth-screen{
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px;
+  position:relative;
+  z-index:10;
+}
+#auth-screen.hidden{display:none}
+.auth-card{
+  width:100%;
+  max-width:440px;
+  background:rgba(12,12,15,.78);
+  border:1px solid var(--edge-bright);
+  border-radius:24px;
+  padding:36px 32px;
+  backdrop-filter:blur(32px) saturate(1.4);
+  -webkit-backdrop-filter:blur(32px) saturate(1.4);
+  box-shadow:0 24px 64px rgba(0,0,0,.6), 0 0 0 1px rgba(255,153,0,.15), 0 0 40px rgba(255,153,0,.08);
+  position:relative;
+  overflow:hidden;
+  animation:auth-enter .45s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes auth-enter{
+  from{opacity:0;transform:translateY(16px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.auth-card::before{
+  content:'';
+  position:absolute;
+  top:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  width:240px;
+  height:240px;
+  background:radial-gradient(circle, rgba(255,153,0,.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+.auth-brand{
+  text-align:center;
+  margin-bottom:28px;
+}
+.auth-logo-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  border-radius:999px;
+  background:var(--amber-dim);
+  border:1px solid rgba(255,153,0,.3);
+  color:var(--amber);
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.auth-title{
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin:0 0 6px;
+  color:var(--text);
+}
+.auth-sub{
+  font-size:13.5px;
+  color:var(--muted);
+  margin:0;
+}
+.auth-tabs{
+  display:flex;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--edge);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:22px;
+  gap:4px;
+}
+.auth-tab-btn{
+  flex:1;
+  padding:9px 0;
+  text-align:center;
+  font-size:13.5px;
+  font-weight:600;
+  border-radius:8px;
+  color:var(--muted);
+  transition:all .2s;
+  cursor:pointer;
+}
+.auth-tab-btn.active{
+  background:var(--glass-strong);
+  color:var(--amber);
+  border:1px solid rgba(255,153,0,.35);
+  box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+.auth-form{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.auth-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  text-align:left;
+}
+.auth-group label{
+  font-size:12px;
+  font-weight:500;
+  color:var(--muted);
+  letter-spacing:.02em;
+}
+.auth-input-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+.auth-input-icon{
+  position:absolute;
+  left:14px;
+  font-size:14px;
+  opacity:.6;
+  pointer-events:none;
+}
+.auth-input{
+  width:100%;
+  padding:12px 14px 12px 38px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--edge);
+  outline:none;
+  color:var(--text);
+  font-size:14px;
+  font-family:inherit;
+  transition:border-color .2s, box-shadow .2s, background .2s;
+}
+.auth-input:focus{
+  border-color:rgba(255,153,0,.6);
+  box-shadow:0 0 0 3px rgba(255,153,0,.12);
+  background:rgba(255,255,255,.06);
+}
+.auth-input::placeholder{color:var(--faint)}
+.auth-pw-toggle{
+  position:absolute;
+  right:12px;
+  background:none;
+  border:0;
+  color:var(--muted);
+  font-size:14px;
+  cursor:pointer;
+  padding:4px;
+  opacity:.7;
+  transition:opacity .15s;
+}
+.auth-pw-toggle:hover{opacity:1;color:var(--text)}
+.auth-row-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:12.5px;
+  color:var(--muted);
+  margin-top:-4px;
+}
+.auth-row-meta a{
+  color:var(--cyan);
+  text-decoration:none;
+  font-size:12px;
+}
+.auth-row-meta a:hover{text-decoration:underline}
+.auth-submit-btn{
+  width:100%;
+  padding:13px;
+  border-radius:12px;
+  background:var(--amber);
+  color:#110a00;
+  font-weight:700;
+  font-size:14.5px;
+  cursor:pointer;
+  border:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:box-shadow .2s, transform .12s, filter .15s;
+  box-shadow:0 4px 16px rgba(255,153,0,.35);
+  margin-top:6px;
+}
+.auth-submit-btn:hover{
+  box-shadow:0 8px 24px rgba(255,153,0,.5);
+  filter:brightness(1.05);
+}
+.auth-submit-btn:active{transform:scale(.98)}
+.auth-divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:18px 0 14px;
+  color:var(--faint);
+  font-size:11.5px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.auth-divider::before,.auth-divider::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--edge);
+}
+.auth-quick-demo{
+  width:100%;
+  padding:11px 14px;
+  border-radius:12px;
+  background:rgba(63,216,255,.07);
+  border:1px solid rgba(63,216,255,.25);
+  color:var(--cyan);
+  font-weight:600;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.auth-quick-demo:hover{
+  background:rgba(63,216,255,.14);
+  border-color:rgba(63,216,255,.45);
+  box-shadow:0 0 16px rgba(63,216,255,.2);
+}
+.auth-social-row{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+.auth-social-btn{
+  flex:1;
+  padding:10px 12px;
+  border-radius:10px;
+  background:var(--glass);
+  border:1px solid var(--edge);
+  color:var(--text);
+  font-size:12.5px;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.auth-social-btn:hover{
+  background:var(--glass-strong);
+  border-color:var(--edge-bright);
+}
+.auth-browse-guest{
+  text-align:center;
+  margin-top:18px;
+  font-size:12.5px;
+  color:var(--muted);
+}
+.auth-browse-guest button{
+  color:var(--muted);
+  text-decoration:underline;
+  font-size:12.5px;
+  cursor:pointer;
+}
+.auth-browse-guest button:hover{color:var(--text)}
+.auth-error-banner{
+  display:none;
+  padding:10px 14px;
+  border-radius:10px;
+  background:rgba(255,107,94,.12);
+  border:1px solid rgba(255,107,94,.35);
+  color:var(--red);
+  font-size:12.5px;
+  margin-bottom:12px;
+  align-items:center;
+  gap:8px;
+}
+.auth-error-banner.show{display:flex}
+
+/* Rail user profile bottom card */
+.rail-user-panel{
+  margin-top:auto;
+  padding-top:14px;
+  border-top:1px solid var(--edge);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.rail-user-info{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.rail-avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg, var(--amber), #ff5500);
+  color:#110a00;
+  font-weight:700;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+}
+.rail-user-text{min-width:0}
+.rail-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail-user-role{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.rail-logout-btn{
+  color:var(--faint);
+  font-size:13px;
+  padding:6px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.rail-logout-btn:hover{color:var(--red);background:rgba(255,107,94,.1)}
+</style>
+</head>
+<body>
+<canvas id="gold-particles-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0"></canvas>
+<div id="field"></div>
+<div id="grain"></div>
+<div class="vignette"></div>
+<div id="toast-stack"></div>
+
+<!-- REAL AUTH / LOGIN SCREEN (DEFAULT FIRST SCREEN) -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-logo-badge">
+        <span class="dot live"></span>
+        <span>Signal Market AI</span>
+      </div>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-sub">Sign in to access real-time NSE & US anomaly terminal</p>
+    </div>
+
+    <!-- TABS: SIGN IN / CREATE ACCOUNT -->
+    <div class="auth-tabs">
+      <div class="auth-tab-btn active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</div>
+      <div class="auth-tab-btn" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+    </div>
+
+    <div id="auth-error-msg" class="auth-error-banner">
+      <span>⚠️</span>
+      <span id="auth-error-text">Invalid credentials. Please try again.</span>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <form id="form-signin" class="auth-form" onsubmit="handleSignInSubmit(event)">
+      <div class="auth-group">
+        <label>Email Address</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✉️</span>
+          <input type="email" id="signin-email" class="auth-input" placeholder="trader@signal.io" required autocomplete="email" value="trader@signal.io">
+        </div>
+      </div>
+
+      <div class="auth-group">
+        <label>Password</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input type="password" id="signin-password" class="auth-input" placeholder="••••••••" required autocomplete="current-password" value="password123">
+          <button type="button" class="auth-pw-toggle" onclick="togglePasswordVisibility('signin-password')">👁️</button>
+        </div>
+      </div>
+
+      <div class="auth-row-meta">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="signin-remember" checked>
+          <span>Remember session</span>
+        </label>
+        <a href="#" onclick="toast('Password reset link sent to registered email', {icon:'📩'});return false;">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="auth-submit-btn" id="signin-submit-btn">
+        <span>Sign In to Terminal</span>
+        <span>→</span>
+      </button>
+    </form>
+
+    <!-- SIGN UP FORM -->
+    <form id="form-signup" class="auth-form" style="display:none" onsubmit="handleSignUpSubmit(event)">
+      <div class="auth-group">
+        <label>Full Name</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">👤</span>
+          <input type="text" id="signup-name" class="auth-input" placeholder="Anirudh Sharma" required autocomplete="name">
+        </div>
+      </div>
+
+      <div class="auth-group">
+        <label>Email Address</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✉️</span>
+          <input type="email" id="signup-email" class="auth-input" placeholder="yourname@gmail.com" required autocomplete="email">
+        </div>
+      </div>
+
+      <div class="auth-group">
+        <label>Password</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input type="password" id="signup-password" class="auth-input" placeholder="Min. 8 characters" required minlength="6" autocomplete="new-password">
+          <button type="button" class="auth-pw-toggle" onclick="togglePasswordVisibility('signup-password')">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-submit-btn">
+        <span>Create Trader Account</span>
+        <span>→</span>
+      </button>
+    </form>
+
+    <div class="auth-divider">or continue with</div>
+
+    <button type="button" class="auth-quick-demo" onclick="quickDemoLogin()">
+      <span>⚡ Quick 1-Click Demo (Pro Trader)</span>
+    </button>
+
+    <div class="auth-social-row">
+      <button type="button" class="auth-social-btn" onclick="handleGoogleSignIn()">
+        <span>🌐 Google</span>
+      </button>
+      <button type="button" class="auth-social-btn" onclick="showLandingFromAuth()">
+        <span>🚀 View Landing</span>
+      </button>
+    </div>
+
+    <div class="auth-browse-guest">
+      <button type="button" onclick="guestLogin()">Continue as Guest Explorer →</button>
+    </div>
+  </div>
+</div>
+
+<div id="landing" class="hidden">
+  <div class="landing-nav">
+    <div class="wordmark"><b>SIGNAL</b><span>MARKET INTELLIGENCE</span></div>
+    <div class="links">
+      <a href="#" onclick="go('signals');enterApp();return false;">Product</a>
+      <a href="#" onclick="go('signals');enterApp();return false;">Live Signals</a>
+      <a href="#" onclick="go('watchlist');enterApp();return false;">Watchlist</a>
+      <a href="#" onclick="showAuthScreen();return false;">Sign In</a>
+    </div>
+    <button class="btn btn-primary btn-sm" id="landing-cta-top" onclick="showAuthScreen()">Sign In / Get started</button>
+  </div>
+  <div class="landing-hero">
+    <div>
+      <div class="pill" style="margin-bottom:20px"><span class="dot live"></span><span>1,556 stocks scanning</span></div>
+      <h1>Don't just see the signal.<br><span class="accent">Understand it.</span></h1>
+      <p>SIGNAL watches every NSE-listed stock for unusual trading activity and explains what's happening in plain language — no jargon, no guesswork.</p>
+      <div class="landing-cta">
+        <button class="btn btn-primary" id="landing-explore">Enter Terminal →</button>
+        <button class="btn btn-ghost" id="landing-watch">▶ How it works</button>
+      </div>
+      <div class="landing-stats">
+        <div><b>30 days</b>of context per signal</div>
+        <div><b>3×</b>volume detection threshold</div>
+        <div><b>Plain language</b>explanations</div>
+        <div><b>15 min</b>auto-scan interval</div>
+      </div>
+    </div>
+    <div class="orb-wrap glass">
+      <canvas id="landing-earth"></canvas>
+      <div class="orb-badge glass"><b>NSE · Live</b>1,556 stocks scanning</div>
+    </div>
+  </div>
+</div>
+
+<div id="app-root">
+  <div id="shell" class="shell">
+    <div class="rail">
+      <div class="wordmark">
+        <b>SIGNAL</b>
+        <span>MARKET INTELLIGENCE</span>
+      </div>
+      <nav style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+        <button class="navlink on" data-pane="dashboard">Home</button>
+        <button class="navlink" data-pane="signals">Live Signals</button>
+        <button class="navlink" data-pane="watchlist">Watchlist</button>
+        <button class="navlink" data-pane="heatmap">Heatmap</button>
+        <button class="navlink" data-pane="earth">Market Map</button>
+        <button class="navlink" data-pane="charts">Charts</button>
+        <button class="navlink" data-pane="settings">Settings</button>
+      </nav>
+
+      <!-- USER PROFILE IN SIDEBAR -->
+      <div class="rail-user-panel" id="rail-user-panel">
+        <div class="rail-user-info">
+          <div class="rail-avatar" id="rail-avatar">AP</div>
+          <div class="rail-user-text">
+            <div class="rail-user-name" id="rail-user-name">Trader User</div>
+            <div class="rail-user-role"><span class="dot live"></span><span id="rail-user-role">PRO PLAN</span></div>
+          </div>
+        </div>
+        <button class="rail-logout-btn" onclick="signOut()" title="Sign Out">🚪</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- TOPBAR WITH COMMAND PALETTE -->
+      <div class="topbar">
+        <div class="search" id="cmd-trigger">
+          <span>⌘K</span>
+          <span style="color:var(--faint)">Search symbols...</span>
+        </div>
+        <span class="pill backend-status"><span class="dot amber"></span><span>Demo data</span></span>
+        <button class="btn btn-ghost btn-sm auth-btn">Sign in</button>
+        <button class="btn btn-ghost btn-sm spatial-toggle" id="spatial-toggle-btn" title="Control SIGNAL with hand gestures via your webcam">
+          <span class="st-dot"></span><span id="spatial-toggle-label">Enter Spatial Mode</span>
+        </button>
+        <button class="btn btn-primary btn-sm" id="presentation-btn">Present</button>
+      </div>
+
+      <!-- DASHBOARD PANE -->
+      <div id="pane-dashboard" class="pane on">
+        <h2 class="pane-title">NSE Market Live</h2>
+        <p class="pane-sub">Live market intelligence for a smarter tomorrow</p>
+
+        <div class="grid stagger" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:16px">
+          <div class="glass stat-tile"><div class="lbl">Stocks Monitored</div><div class="num" id="stat-monitored" data-count-to="1556">0</div></div>
+          <div class="glass stat-tile"><div class="lbl">In Watchlist</div><div class="num" id="stat-watchlist">5</div></div>
+          <div class="glass stat-tile"><div class="lbl">Unusual Signals</div><div class="num" id="stat-signals" style="color:var(--amber)" data-count-to="12">0</div></div>
+          <div class="glass stat-tile"><div class="lbl">Next Auto-scan</div><div class="num" id="stat-clock">07:34</div></div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-bottom:24px">
+          <div class="glass" style="padding:20px;border-radius:var(--r-lg)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px;color:var(--muted)">System Active</span>
+              <span class="pill"><span class="dot live"></span>Live</span>
+            </div>
+            <div class="pulse-circle"></div>
+            <div style="text-align:center;margin-top:16px;color:var(--text);font-weight:600">Scanning trading volume</div>
+            <div style="text-align:center;color:var(--muted);font-size:13px">1,556 checked · 12 signals · last scan 2m ago</div>
+          </div>
+
+          <div class="glass" style="padding:20px;border-radius:var(--r-lg)">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Market Sentiment</div>
+            <div style="font-size:48px;font-weight:700;color:var(--amber);margin:12px 0">62<span style="font-size:16px;color:var(--muted)">/100</span></div>
+            <div style="font-size:13px;color:var(--muted)">Neutral, leaning risk-on</div>
+          </div>
+        </div>
+
+        <!-- CANDLESTICK CHART -->
+        <div style="margin-bottom:24px">
+          <h3 style="margin:0 0 16px;font-size:18px">Top Movers (NIFTY 50)</h3>
+          <div class="chart-container">
+            <canvas id="candlestick-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE SIGNALS PANE -->
+      <div id="pane-signals" class="pane">
+        <h2 class="pane-title">Live Signals</h2>
+        <p class="pane-sub">Scanning the full NSE list for volume that doesn't match the pattern</p>
+
+        <div class="glass" id="ticker-search-card" style="padding:20px;border-radius:var(--r-lg);margin-bottom:20px">
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">Search any stock — India or US</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-bottom:14px">Type any ticker on the NSE or a US exchange and run the volume-spike check on it directly.</div>
+          <form id="ticker-search-form" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <input id="ticker-search-input" class="tickerbox" type="text" placeholder="e.g. RELIANCE, TATASTEEL, AAPL, TSLA" autocomplete="off" spellcheck="false">
+            <div class="market-toggle" role="group" aria-label="Market">
+              <button type="button" class="market-opt on" data-market="IN">🇮🇳 India · NSE</button>
+              <button type="button" class="market-opt" data-market="US">🇺🇸 United States</button>
+            </div>
+            <button class="btn btn-primary btn-sm" type="submit" id="ticker-search-btn">Analyze</button>
+          </form>
+          <div id="ticker-search-status" style="margin-top:10px;font-size:13px;min-height:16px"></div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:300px minmax(0,1fr);align-items:start;margin-bottom:24px">
+          <div class="glass" style="padding:20px;border-radius:var(--r-lg)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <span style="font-weight:600;font-size:14px">Scanning watchlist</span>
+              <span class="pill"><span class="dot live"></span>Live</span>
+            </div>
+            <div class="radar"><div class="radar-sweep"></div></div>
+            <div id="scan-list" style="margin-top:18px"></div>
+          </div>
+
+          <div>
+            <h3 style="margin:0 0 14px;font-size:16px">Unusual activity detected</h3>
+            <div class="watchlist-container stagger" id="signal-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEATMAP PANE -->
+      <div id="pane-heatmap" class="pane">
+        <h2 class="pane-title">Sector Heatmap</h2>
+        <p class="pane-sub">Visualize market momentum across all sectors</p>
+        
+        <div class="heatmap-grid stagger" id="heatmap-grid">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- WATCHLIST PANE -->
+      <div id="pane-watchlist" class="pane">
+        <h2 class="pane-title">My Watchlist</h2>
+        <p class="pane-sub">Drag to reorder, click to expand details</p>
+        
+        <div class="watchlist-container stagger" id="watchlist-container">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- EARTH PANE -->
+      <div id="pane-earth" class="pane">
+        <div class="pane-head">
+          <div>
+            <h2 class="pane-title">Market Map — Global Activity</h2>
+            <p class="pane-sub">Interactive 3D visualization of worldwide stock exchanges, active liquidity sessions, and trade flows</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span class="pill"><span class="dot live"></span><span>8 Major Exchanges Monitored</span></span>
+            <button class="btn btn-ghost btn-sm" id="btn-reset-earth" onclick="if(window.resetEarthView) window.resetEarthView()">Reset View</button>
+          </div>
+        </div>
+        
+        <div class="earth-container">
+          <canvas id="earth-canvas" style="cursor:grab"></canvas>
+          <div style="position:absolute;top:16px;left:16px;display:flex;flex-direction:column;gap:6px;pointer-events:none;background:rgba(8,10,15,0.75);padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--edge);backdrop-filter:blur(8px)">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.05em;color:var(--muted);text-transform:uppercase">Global Trade Routes</div>
+            <div style="font-size:13px;color:var(--text);font-weight:500"><span style="color:var(--amber)">●</span> Mumbai (NSE) ➔ <span style="color:var(--cyan)">●</span> New York / London</div>
+          </div>
+          <div style="position:absolute;bottom:14px;left:16px;font-size:12.5px;color:var(--faint);pointer-events:none">
+            🖱️ Click & Drag to rotate · Scroll to zoom · Click any market hub card below to focus
+          </div>
+        </div>
+
+        <h3 style="font-size:17px;font-weight:600;margin:0 0 12px">Global Financial Centers</h3>
+        <div id="earth-hub-grid" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+          <!-- Hub cards populated by initEarth -->
+        </div>
+      </div>
+
+      <!-- CHARTS PANE -->
+      <div id="pane-charts" class="pane">
+        <h2 class="pane-title">Advanced Charts</h2>
+        <p class="pane-sub">Technical analysis and price movements</p>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px">
+          <div class="chart-container">
+            <canvas id="volume-chart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="rsi-chart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="macd-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PANE -->
+      <div id="pane-settings" class="pane">
+        <h2 class="pane-title">Settings</h2>
+        <p class="pane-sub">Configure your dashboard preferences</p>
+        
+        <div class="glass stagger" style="padding:8px 20px;border-radius:var(--r-lg)">
+          <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;cursor:pointer">
+            <span>Enable price alerts</span>
+            <span class="switch"><input type="checkbox" id="sw-alerts" data-label="Price alerts" checked><span class="track"></span><span class="thumb"></span></span>
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;cursor:pointer;border-top:1px solid var(--edge)">
+            <span>Push notifications</span>
+            <span class="switch"><input type="checkbox" id="sw-notifications" data-label="Push notifications" checked><span class="track"></span><span class="thumb"></span></span>
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;cursor:pointer;border-top:1px solid var(--edge)">
+            <span>Sound notifications</span>
+            <span class="switch"><input type="checkbox" id="sw-sound" data-label="Sound notifications" checked><span class="track"></span><span class="thumb"></span></span>
+          </label>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-top:1px solid var(--edge)">
+            <div>
+              <div>Spatial hand gesture mode</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:2px">Control SIGNAL with your webcam and hand gestures — never required.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="settings-recalibrate-btn">Recalibrate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMAND PALETTE MODAL -->
+<div id="cmd-palette" class="cmd-palette">
+  <div class="cmd-inner">
+    <input type="text" class="cmd-input" id="cmd-input" placeholder="Search stocks, sectors, or commands...">
+    <div class="cmd-results" id="cmd-results"></div>
+  </div>
+</div>
+
+<!-- PRESENTATION MODE -->
+<div id="presentation-mode" class="presentation-mode">
+  <div class="presentation-content">
+    <div class="presentation-title" id="presentation-title">SIGNAL</div>
+    <div class="presentation-subtitle" id="presentation-subtitle">Unusual Market Activity Explained</div>
+    
+    <div class="presentation-grid stagger" id="presentation-grid">
+      <!-- Generated dynamically -->
+    </div>
+
+    <div style="position:absolute;bottom:40px;left:40px;font-size:14px;color:var(--muted)">
+      <kbd style="background:var(--glass);padding:4px 8px;border-radius:4px;display:inline-block">ESC</kbd> to exit
+    </div>
+  </div>
+</div>
+
+<!-- STOCK DETAIL OVERLAY -->
+<div id="detail-overlay" class="detail-overlay">
+  <div class="detail-panel glass">
+    <div class="detail-head">
+      <div>
+        <div style="font-weight:700;font-size:18px" id="detail-symbol">TATA MOTORS</div>
+        <div style="color:var(--muted);font-size:13px" id="detail-name">TATAMOTORS</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="text-align:right">
+          <div class="signal-mult" id="detail-mult">4.7×</div>
+          <div style="font-size:12px;color:var(--muted)">normal volume</div>
+        </div>
+        <button class="btn btn-primary btn-sm" id="detail-add-watchlist">Add to watchlist</button>
+        <button class="close-x" id="detail-close">✕</button>
+      </div>
+    </div>
+    <div class="detail-tabs">
+      <button class="detail-tab on" data-tab="overview">Overview</button>
+      <button class="detail-tab" data-tab="ai">AI Explanation</button>
+      <button class="detail-tab" data-tab="charts">Charts</button>
+      <button class="detail-tab" data-tab="news">News</button>
+      <button class="detail-tab" data-tab="company">Company</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tabpane on" data-tabpane="overview">
+        <p style="color:var(--muted);font-size:14px;line-height:1.6">Today's traded volume is running well above the 30-day average, with price holding a mild positive move. This tab summarizes the numbers — see <b>AI Explanation</b> for what might be driving it.</p>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:16px">
+          <div class="glass stat-tile"><div class="lbl">Today's volume</div><div class="num" id="detail-vol">13.2M</div></div>
+          <div class="glass stat-tile"><div class="lbl">30-day avg</div><div class="num">2.8M</div></div>
+          <div class="glass stat-tile"><div class="lbl">Price change</div><div class="num" style="color:var(--green)" id="detail-change">+2.4%</div></div>
+        </div>
+      </div>
+      <div class="detail-tabpane" data-tabpane="ai">
+        <div class="insight-box glass">
+          <div style="font-size:12px;color:var(--amber);margin-bottom:6px" id="detail-ai-source">AI INSIGHT · Amazon Bedrock (Claude)</div>
+          <p style="color:var(--muted);font-size:13.5px;line-height:1.6;margin:0" id="detail-ai-text">The volume is running roughly 4.7× the 30-day average, which often lines up with fresh investor interest — earnings expectations, a broader sector move, or news that hasn't fully priced in yet.</p>
+        </div>
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:20px">
+          <div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px">Why this matters</div>
+            <ul class="why-list">
+              <li>🟠 Higher than usual market activity</li>
+              <li>🟡 Could indicate a new development</li>
+              <li>⚪ Worth a closer look</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px">What to check next</div>
+            <ul class="why-list">
+              <li>1️⃣ Look for today's company news</li>
+              <li>2️⃣ Check the price movement and trend</li>
+              <li>3️⃣ See if there are any announcements</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:var(--faint)">This is not a buy or sell recommendation.</div>
+      </div>
+      <div class="detail-tabpane" data-tabpane="charts">
+        <div class="chart-container"><canvas id="detail-chart"></canvas></div>
+      </div>
+      <div class="detail-tabpane" data-tabpane="news">
+        <div id="detail-news" style="color:var(--muted);font-size:14px">No fresh headlines flagged for this stock in the last 24 hours — the volume move isn't yet explained by public news.</div>
+      </div>
+      <div class="detail-tabpane" data-tabpane="company">
+        <p style="color:var(--muted);font-size:14px">Company profile, sector, and fundamentals would appear here once connected to a data provider.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3D GLOBE EXCHANGE DETAIL OVERLAY -->
+<div id="hub-modal-overlay" class="detail-overlay">
+  <div class="detail-panel glass" style="max-width:540px;border:1px solid var(--amber)">
+    <div class="detail-head">
+      <div>
+        <div style="font-weight:700;font-size:20px;display:flex;align-items:center;gap:10px" id="hub-modal-title">
+          <span id="hub-modal-flag">🇮🇳</span> <span id="hub-modal-name">NSE / BSE</span>
+        </div>
+        <div style="color:var(--muted);font-size:13px;margin-top:2px" id="hub-modal-location">Mumbai, India · IST (UTC+5:30)</div>
+      </div>
+      <button class="close-x" onclick="closeHubModal()">✕</button>
+    </div>
+    <div class="detail-body" style="padding-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,184,0,0.08);border:1px solid rgba(255,184,0,0.25);padding:10px 14px;border-radius:var(--r-md);margin-bottom:16px">
+        <span style="font-size:13px;font-weight:600;color:var(--amber)" id="hub-modal-status">🟢 ACTIVE MONITORED SESSION</span>
+        <span class="mono" style="font-size:13px;font-weight:700" id="hub-modal-vol">Daily Vol: ₹3.8 Lakh Cr</span>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">Top Monitored Equities on Exchange</div>
+      <div id="hub-modal-stocks" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+        <!-- Stock Pills loaded dynamically -->
+      </div>
+
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">Connected Liquidity Corridors</div>
+      <div id="hub-modal-routes" style="font-size:12.5px;color:var(--muted);line-height:1.5;background:rgba(0,0,0,0.25);padding:10px 14px;border-radius:var(--r-md);margin-bottom:20px;border:1px solid var(--edge)">
+        <!-- Connected routes loaded dynamically -->
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1" id="hub-modal-action-btn">Analyze Primary Anomaly →</button>
+        <button class="btn btn-ghost" onclick="closeHubModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SPATIAL HAND GESTURE MODE — DOM ============ -->
+<!-- Hidden video feed used only for hand-landmark inference; never shown. -->
+<video id="spatial-video" playsinline muted autoplay></video>
+
+<!-- Fullscreen non-interactive layer the virtual hand cursor is drawn into. -->
+<div id="spatial-cursor-layer">
+  <div class="spatial-cursor searching" id="spatial-cursor"></div>
+  <div class="spatial-hover-ring" id="spatial-hover-ring" style="opacity:0"></div>
+</div>
+
+<!-- Minimal always-on status HUD while Spatial Mode is active. -->
+<div id="spatial-hud">
+  <div class="sh-title"><span class="sh-dot"></span>SPATIAL MODE · ACTIVE</div>
+  <div class="sh-row"><span>CAMERA</span><b id="spatial-hud-camera">CONNECTING</b></div>
+  <div class="sh-row"><span>HAND</span><b id="spatial-hud-hand">SEARCHING</b></div>
+  <div class="sh-row"><span>GESTURE</span><b id="spatial-hud-gesture">—</b></div>
+  <button class="sh-exit" id="spatial-hud-exit">Exit Spatial Mode</button>
+</div>
+
+<!-- Palm radial control menu -->
+<div id="spatial-palm-menu">
+  <button data-act="resume">▶ Resume</button>
+  <button data-act="exit">⏻ Exit Spatial Mode</button>
+  <button data-act="recalibrate">⟲ Recalibrate</button>
+</div>
+
+<!-- Cinematic activation / transition scrim (dashboard stays dimly visible behind it) -->
+<div class="spatial-scrim" id="spatial-scrim">
+  <div class="ring" id="spatial-scrim-ring"></div>
+  <div class="status-line" id="spatial-scrim-status">INITIALIZING SPATIAL INTERFACE</div>
+  <div class="status-sub" id="spatial-scrim-sub"></div>
+  <div class="scrim-actions" id="spatial-scrim-actions"></div>
+</div>
+
+<!-- Camera permission denied / unavailable modal -->
+<div class="spatial-scrim" id="spatial-permission-modal">
+  <div class="status-line" style="color:var(--amber)">SPATIAL MODE UNAVAILABLE</div>
+  <div class="status-sub" id="spatial-permission-reason">Camera permission is required for hand tracking.</div>
+  <div class="scrim-actions">
+    <button class="btn btn-primary btn-sm" id="spatial-retry-btn">Try again</button>
+    <button class="btn btn-ghost btn-sm" id="spatial-continue-normal-btn">Continue with Normal Mode</button>
+  </div>
+</div>
+
+<script>
+const SYMBOLS = [
+  'RELIANCE', 'TCS', 'INFY', 'HDFC', 'ICICI', 'AXIS', 'SBIN', 'LT',
+  'WIPRO', 'MARUTI', 'BAJAJ', 'ITC', 'TATASTEEL', 'ONGC', 'COALINDIA',
+  'JSWSTEEL', 'NTPC', 'POWERGRID', 'DRREDDY', 'SUNPHARMA'
+];
+
+const SECTORS = [
+  'IT', 'Banking', 'Auto', 'Pharma', 'Energy', 'Metals', 'Telecom',
+  'FMCG', 'Real Estate', 'Utilities', 'Oil&Gas', 'Chemicals'
+];
+
+let watchlist = [
+  {symbol:'RELIANCE', price:2845.50, change:2.3},
+  {symbol:'TCS', price:4205.20, change:-1.2},
+  {symbol:'INFY', price:1892.80, change:3.1},
+  {symbol:'HDFC', price:2720.30, change:1.8},
+  {symbol:'ICICI', price:945.65, change:-0.5},
+];
+
+let draggedItem = null;
+let dragOffset = 0;
+
+/* ============ BACKEND CONFIG ============ */
+// Set API_BASE_URL to your local dev server (http://127.0.0.1:8000) or your deployed AWS API Gateway.
+// When connecting to AWS with Cognito, fill in COGNITO_DOMAIN and COGNITO_CLIENT_ID from `sam deploy`.
+const CONFIG = {
+  API_BASE_URL: 'http://127.0.0.1:8000',       // Local backend server or "https://abc123.execute-api.us-east-1.amazonaws.com/Prod"
+  COGNITO_DOMAIN: '',     // e.g. "https://risk-flagger-111122223333.auth.us-east-1.amazoncognito.com"
+  COGNITO_CLIENT_ID: '',  // from CognitoClientId output
+  REDIRECT_URI: window.location.origin + window.location.pathname,
+};
+const IS_LOCAL_BACKEND = () => !!(CONFIG.API_BASE_URL && (CONFIG.API_BASE_URL.includes('localhost') || CONFIG.API_BASE_URL.includes('127.0.0.1')));
+const BACKEND_CONFIGURED = () => !!(CONFIG.API_BASE_URL && (IS_LOCAL_BACKEND() || (CONFIG.COGNITO_DOMAIN && CONFIG.COGNITO_CLIENT_ID)));
+
+let authToken = null;
+
+/* ============ HAPTICS ============ */
+// Fires a short vibration pattern on supported devices (mostly Android/Chrome —
+// iOS Safari does not expose navigator.vibrate, so this silently no-ops there).
+function haptic(type){
+  if(!('vibrate' in navigator)) return;
+  const patterns = {
+    tap: 8,
+    select: 10,
+    drag: 6,
+    drop: [14, 22, 10],
+    success: [12, 40, 18],
+    warn: [16, 30, 16, 30, 16],
+    error: [28, 40, 28],
+  };
+  try{ navigator.vibrate(patterns[type] ?? patterns.tap); }catch(e){}
+}
+
+/* ============ TOAST ============ */
+function toast(msg, opts){
+  opts = opts || {};
+  let stack = document.getElementById('toast-stack');
+  if(!stack){
+    stack = document.createElement('div');
+    stack.id = 'toast-stack';
+    document.body.appendChild(stack);
+  }
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<span>${opts.icon || '✓'}</span><span>${msg}</span>`;
+  stack.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('leaving');
+    setTimeout(() => el.remove(), 220);
+  }, opts.duration || 2200);
+}
+
+/* ============ RIPPLE + GLOBAL TAP FEEDBACK ============ */
+function spawnRipple(btn, x, y){
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.3;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (x - rect.left - size/2) + 'px';
+  ripple.style.top = (y - rect.top - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+}
+
+function initGlobalFeedback(){
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.btn');
+    if(btn){
+      spawnRipple(btn, e.clientX, e.clientY);
+      haptic('tap');
+      return;
+    }
+    if(e.target.closest('.navlink')){ haptic('select'); return; }
+    if(e.target.closest('.detail-tab')){ haptic('select'); return; }
+  }, true);
+}
+
+/* ============ NUMBER COUNT-UP ============ */
+function animateCount(el, target, duration){
+  duration = duration || 1100;
+  const start = performance.now();
+  const from = 0;
+  function frame(now){
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(from + (target - from) * eased);
+    el.textContent = val.toLocaleString('en-IN');
+    if(p < 1) requestAnimationFrame(frame);
+    else el.textContent = target.toLocaleString('en-IN');
+  }
+  requestAnimationFrame(frame);
+}
+
+function initCountUps(){
+  document.querySelectorAll('[data-count-to]').forEach(el => {
+    animateCount(el, parseInt(el.dataset.countTo, 10));
+  });
+}
+
+let currentUser = null;
+
+function getStoredUser(){
+  try{
+    const u = localStorage.getItem('rf_user') || sessionStorage.getItem('rf_user');
+    return u ? JSON.parse(u) : null;
+  }catch(e){ return null; }
+}
+
+function parseAuthFromHash(){
+  if(location.hash && location.hash.includes('id_token')){
+    const params = new URLSearchParams(location.hash.slice(1));
+    authToken = params.get('id_token');
+    if(authToken) sessionStorage.setItem('rf_id_token', authToken);
+    history.replaceState(null, '', location.pathname + location.search);
+  } else {
+    authToken = sessionStorage.getItem('rf_id_token');
+  }
+}
+
+function switchAuthTab(tab){
+  const signinTab = document.getElementById('tab-signin');
+  const signupTab = document.getElementById('tab-signup');
+  const signinForm = document.getElementById('form-signin');
+  const signupForm = document.getElementById('form-signup');
+  hideAuthError();
+  if(tab === 'signin'){
+    signinTab.classList.add('active');
+    signupTab.classList.remove('active');
+    signinForm.style.display = 'flex';
+    signupForm.style.display = 'none';
+  } else {
+    signupTab.classList.add('active');
+    signinTab.classList.remove('active');
+    signupForm.style.display = 'flex';
+    signinForm.style.display = 'none';
+  }
+  haptic('tap');
+}
+
+function togglePasswordVisibility(inputId){
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  el.type = el.type === 'password' ? 'text' : 'password';
+  haptic('tap');
+}
+
+function showAuthError(msg){
+  const banner = document.getElementById('auth-error-msg');
+  const text = document.getElementById('auth-error-text');
+  if(banner && text){
+    text.textContent = msg;
+    banner.classList.add('show');
+    banner.classList.add('shake');
+    setTimeout(() => banner.classList.remove('shake'), 500);
+  }
+  haptic('warn');
+}
+
+function hideAuthError(){
+  const banner = document.getElementById('auth-error-msg');
+  if(banner) banner.classList.remove('show');
+}
+
+async function handleSignInSubmit(e){
+  e.preventDefault();
+  hideAuthError();
+  const email = document.getElementById('signin-email').value.trim();
+  const password = document.getElementById('signin-password').value;
+  const remember = document.getElementById('signin-remember').checked;
+  const submitBtn = document.getElementById('signin-submit-btn');
+
+  if(!email || !password){
+    showAuthError('Please fill in both email and password.');
+    return;
+  }
+
+  const originalBtnText = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span>Verifying credentials…</span>';
+
+  try {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok){
+      showAuthError(data.error || `Authentication failed (HTTP ${res.status})`);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      return;
+    }
+
+    loginUser(data.user, remember, data.token);
+  } catch(err){
+    console.error('Login error:', err);
+    showAuthError('Cannot connect to backend server. Make sure it is running on port 8000.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnText;
+  }
+}
+
+async function handleSignUpSubmit(e){
+  e.preventDefault();
+  hideAuthError();
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+
+  if(!name || !email || !password){
+    showAuthError('Please fill in all registration fields.');
+    return;
+  }
+
+  if(password.length < 6){
+    showAuthError('Password must be at least 6 characters long.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/auth/signup`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok){
+      showAuthError(data.error || `Sign up failed (HTTP ${res.status})`);
+      return;
+    }
+
+    loginUser(data.user, true, data.token);
+  } catch(err){
+    console.error('Sign up error:', err);
+    showAuthError('Cannot connect to backend server.');
+  }
+}
+
+async function quickDemoLogin(){
+  document.getElementById('signin-email').value = 'trader@signal.io';
+  document.getElementById('signin-password').value = 'password123';
+  const fakeEvent = { preventDefault: () => {} };
+  await handleSignInSubmit(fakeEvent);
+}
+
+function handleGoogleSignIn(){
+  if(CONFIG.COGNITO_DOMAIN && CONFIG.COGNITO_CLIENT_ID){
+    const url = `${CONFIG.COGNITO_DOMAIN}/login?response_type=token&client_id=${CONFIG.COGNITO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CONFIG.REDIRECT_URI)}&scope=openid+email+profile`;
+    window.location.href = url;
+    return;
+  }
+  const user = {
+    id: 'usr_google_demo',
+    name: 'Google User',
+    email: 'trader.google@gmail.com',
+    role: 'GOOGLE VERIFIED'
+  };
+  loginUser(user, true, 'google_tok_' + Date.now());
+}
+
+function guestLogin(){
+  const user = {
+    id: 'usr_guest',
+    name: 'Guest Trader',
+    email: 'guest@signal.io',
+    role: 'GUEST EXPLORER'
+  };
+  loginUser(user, false, 'guest_' + Date.now());
+}
+
+function showLandingFromAuth(){
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('landing').classList.remove('hidden');
+  document.getElementById('shell').classList.remove('on');
+  haptic('select');
+  setTimeout(() => initEarth('landing-earth'), 100);
+}
+
+function showAuthScreen(){
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('shell').classList.remove('on');
+  hideAuthError();
+  haptic('select');
+}
+
+function loginUser(user, remember, token){
+  currentUser = user;
+  authToken = token || user.token;
+  if(remember){
+    localStorage.setItem('rf_user', JSON.stringify(user));
+    localStorage.setItem('rf_id_token', authToken);
+  } else {
+    sessionStorage.setItem('rf_user', JSON.stringify(user));
+    sessionStorage.setItem('rf_id_token', authToken);
+  }
+
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('shell').classList.add('on');
+
+  updateUserUI();
+  updateAuthUI();
+  go('dashboard');
+  haptic('success');
+  toast(`Welcome, ${user.name}! Authenticated.`, {icon:'🔐'});
+}
+
+function signOut(){
+  currentUser = null;
+  authToken = null;
+  localStorage.removeItem('rf_user');
+  sessionStorage.removeItem('rf_user');
+  sessionStorage.removeItem('rf_id_token');
+
+  document.getElementById('shell').classList.remove('on');
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('auth-screen').classList.remove('hidden');
+
+  updateAuthUI();
+  haptic('warn');
+  toast('Signed out successfully', {icon:'🚪'});
+}
+
+function updateUserUI(){
+  const user = currentUser || getStoredUser();
+  if(!user) return;
+  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'TR';
+  
+  const avatarEl = document.getElementById('rail-avatar');
+  const nameEl = document.getElementById('rail-user-name');
+  const roleEl = document.getElementById('rail-user-role');
+  
+  if(avatarEl) avatarEl.textContent = initials;
+  if(nameEl) nameEl.textContent = user.name;
+  if(roleEl) roleEl.textContent = user.role || 'PRO TRADER';
+}
+
+function updateAuthUI(){
+  const isLocal = IS_LOCAL_BACKEND();
+  const user = currentUser || getStoredUser();
+  const authed = !!user || !!authToken;
+  const live = BACKEND_CONFIGURED() && (isLocal || authed);
+
+  updateUserUI();
+
+  document.querySelectorAll('.auth-btn').forEach(btn => {
+    if(authed){
+      btn.textContent = 'Sign out';
+      btn.onclick = signOut;
+    } else {
+      btn.textContent = 'Sign in';
+      btn.onclick = showAuthScreen;
+    }
+  });
+
+  document.querySelectorAll('.backend-status').forEach(el => {
+    if(isLocal){
+      el.innerHTML = '<span class="dot live"></span><span>Local Backend (Live Market)</span>';
+    } else {
+      el.innerHTML = live
+        ? '<span class="dot live"></span><span>Live backend</span>'
+        : `<span class="dot amber"></span><span>${BACKEND_CONFIGURED() ? 'Sign in for live data' : 'Demo data'}</span>`;
+    }
+  });
+}
+
+/* ============ API CALLS ============ */
+async function analyzeStock(ticker, market){
+  const isLocal = IS_LOCAL_BACKEND();
+  if(!BACKEND_CONFIGURED()) return null;
+  if(!isLocal && !authToken) return null;
+  try{
+    const headers = {'Content-Type': 'application/json'};
+    if(authToken) headers['Authorization'] = authToken;
+    const res = await fetch(`${CONFIG.API_BASE_URL}/analyze`, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ticker, market: market || 'IN'})
+    });
+    const data = await res.json().catch(() => null);
+    if(!res.ok){
+      return { error: (data && data.error) || `Request failed (HTTP ${res.status})` };
+    }
+    return data;
+  } catch(err){
+    console.error(err);
+    return { error: 'Network error — couldn\'t reach the backend.' };
+  }
+}
+
+async function fetchHistory(ticker){
+  const isLocal = IS_LOCAL_BACKEND();
+  if(!BACKEND_CONFIGURED()) return null;
+  if(!isLocal && !authToken) return null;
+  try{
+    const headers = {};
+    if(authToken) headers['Authorization'] = authToken;
+    const res = await fetch(`${CONFIG.API_BASE_URL}/history?ticker=${encodeURIComponent(ticker)}`, {
+      headers: headers
+    });
+    if(!res.ok) throw new Error('history failed');
+    return await res.json();
+  } catch(err){
+    console.error(err);
+    return null;
+  }
+}
+
+/* ============ COMMAND PALETTE ============ */
+function initCommandPalette(){
+  const palette = document.getElementById('cmd-palette');
+  const input = document.getElementById('cmd-input');
+  const results = document.getElementById('cmd-results');
+  const trigger = document.getElementById('cmd-trigger');
+  let selectedIndex = -1;
+
+  const commands = [
+    {name:'Home', key:'dashboard', icon:'📊'},
+    {name:'Live Signals', key:'signals', icon:'🛰️'},
+    {name:'Watchlist', key:'watchlist', icon:'⭐'},
+    {name:'Heatmap', key:'heatmap', icon:'🔥'},
+    {name:'Market Map', key:'earth', icon:'🌍'},
+    {name:'Charts', key:'charts', icon:'📈'},
+    {name:'Settings', key:'settings', icon:'⚙️'},
+    {name:'Presentation', key:'presentation', icon:'🎬'},
+  ];
+
+  function filterItems(query){
+    const q = query.toLowerCase().trim();
+    const items = [
+      ...commands.filter(c => c.name.toLowerCase().includes(q)),
+      ...SYMBOLS.filter(s => s.toLowerCase().includes(q)).map(s => ({name:`View ${s}`, icon:'📊', action:() => runTickerSearch(s, 'IN')}))
+    ];
+    // Free-text ticker lookup: always offered once the user has typed something,
+    // so ANY symbol — not just the 20 in the demo watchlist — is searchable,
+    // in either market.
+    if(q.length >= 1){
+      const t = query.trim().toUpperCase();
+      items.push({name:`Analyze "${t}" — India · NSE`, icon:'🇮🇳', action:() => runTickerSearch(t, 'IN')});
+      items.push({name:`Analyze "${t}" — United States`, icon:'🇺🇸', action:() => runTickerSearch(t, 'US')});
+    }
+    return items;
+  }
+
+  function renderResults(query){
+    const items = filterItems(query);
+    results.innerHTML = items.map((item, i) => 
+      `<div class="cmd-item ${selectedIndex===i?'selected':''}" data-index="${i}">
+        <span class="cmd-icon">${item.icon}</span>
+        <span>${item.name}</span>
+      </div>`
+    ).join('');
+    selectedIndex = items.length > 0 ? 0 : -1;
+  }
+
+  trigger.onclick = () => {
+    palette.classList.add('active');
+    input.focus();
+    haptic('light');
+  };
+
+  function selectItem(item){
+    haptic('select');
+    if(item.action) item.action();
+    else go(item.key);
+    palette.classList.remove('active');
+    input.value = '';
+    renderResults('');
+  }
+
+  results.addEventListener('click', e => {
+    const row = e.target.closest('.cmd-item');
+    if(!row) return;
+    const items = filterItems(input.value);
+    const item = items[parseInt(row.dataset.index, 10)];
+    if(item) selectItem(item);
+  });
+
+  input.addEventListener('input', e => {
+    renderResults(e.target.value);
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = filterItems(input.value);
+    
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+      renderResults(input.value);
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      renderResults(input.value);
+    } else if(e.key === 'Enter' && selectedIndex >= 0){
+      e.preventDefault();
+      selectItem(items[selectedIndex]);
+    } else if(e.key === 'Escape'){
+      haptic('tap');
+      palette.classList.remove('active');
+      input.value = '';
+      renderResults('');
+    }
+  });
+
+  // Keyboard shortcut
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      palette.classList.add('active');
+      input.focus();
+      haptic('light');
+    }
+  });
+
+  palette.addEventListener('click', e => {
+    if(e.target === palette) palette.classList.remove('active');
+  });
+}
+
+/* ============ NAVIGATION ============ */
+function go(paneKey){
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  document.getElementById('pane-' + paneKey)?.classList.add('on');
+  
+  document.querySelectorAll('.navlink').forEach(link => {
+    link.classList.toggle('on', link.dataset.pane === paneKey);
+  });
+
+  if(paneKey === 'earth'){
+    // Defer one frame so the pane is visible and canvas has real CSS dimensions
+    requestAnimationFrame(() => {
+      if(!window._earthInited){
+        initEarth('earth-canvas');
+        window._earthInited = true;
+      } else if(window.resizeEarth){
+        window.resizeEarth();
+      }
+    });
+  }
+}
+
+/* ============ WATCHLIST (DRAGGABLE) ============ */
+function initWatchlist(){
+  const container = document.getElementById('watchlist-container');
+  
+  function render(){
+    container.innerHTML = watchlist.map((w, i) => 
+      `<div class="watch-item" data-index="${i}" draggable="true">
+        <div class="watch-drag-handle">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="watch-info">
+          <div class="watch-symbol">${w.symbol}</div>
+          <div class="watch-price">₹ ${w.price.toFixed(2)}</div>
+        </div>
+        <div class="watch-change ${w.change >= 0 ? 'up' : 'down'}">
+          ${w.change >= 0 ? '↑' : '↓'} ${Math.abs(w.change).toFixed(2)}%
+        </div>
+      </div>`
+    ).join('');
+
+    document.querySelectorAll('.watch-item').forEach(item => {
+      item.addEventListener('dragstart', onDragStart);
+      item.addEventListener('dragover', onDragOver);
+      item.addEventListener('drop', onDrop);
+      item.addEventListener('dragend', onDragEnd);
+      item.addEventListener('dragenter', onDragEnter);
+      item.addEventListener('dragleave', onDragLeave);
+    });
+  }
+
+  function onDragStart(e){
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    haptic('drag');
+  }
+
+  function onDragOver(e){
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
+
+  function onDragEnter(e){
+    if(this !== draggedItem) this.style.borderTop = '2px solid var(--amber)';
+  }
+
+  function onDragLeave(e){
+    this.style.borderTop = '';
+  }
+
+  function onDrop(e){
+    e.preventDefault();
+    if(this !== draggedItem){
+      const allItems = Array.from(document.querySelectorAll('.watch-item'));
+      const draggedIdx = parseInt(draggedItem.dataset.index);
+      const targetIdx = parseInt(this.dataset.index);
+      
+      const temp = watchlist[draggedIdx];
+      if(draggedIdx < targetIdx){
+        watchlist.splice(draggedIdx, 1);
+        watchlist.splice(targetIdx - 1, 0, temp);
+      } else {
+        watchlist.splice(draggedIdx, 1);
+        watchlist.splice(targetIdx, 0, temp);
+      }
+      haptic('drop');
+      render();
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.watch-item').forEach(item => {
+          item.classList.add('drop-settle');
+          setTimeout(() => item.classList.remove('drop-settle'), 320);
+        });
+      });
+    }
+    this.style.borderTop = '';
+  }
+
+  function onDragEnd(e){
+    this.classList.remove('dragging');
+    document.querySelectorAll('.watch-item').forEach(item => {
+      item.style.borderTop = '';
+    });
+  }
+
+  render();
+}
+
+/* ============ HEATMAP ============ */
+function initHeatmap(){
+  const grid = document.getElementById('heatmap-grid');
+  const heatmapData = SECTORS.map(sector => ({
+    name: sector,
+    value: Math.random() * 100 - 50 // -50 to +50
+  }));
+
+  grid.innerHTML = heatmapData.map(item => {
+    const intensity = (item.value + 50) / 100; // 0 to 1
+    const color = item.value > 0 
+      ? `rgba(74, 222, 128, ${intensity * 0.8})`
+      : `rgba(255, 107, 94, ${intensity * 0.8})`;
+    
+    return `<div class="heatmap-cell" data-sector="${item.name}" data-value="${item.value.toFixed(1)}" style="background:${color};border-color:${color}">
+      <div>${item.name}</div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.heatmap-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const wasSelected = cell.classList.contains('selected');
+      grid.querySelectorAll('.heatmap-cell.selected').forEach(c => c.classList.remove('selected'));
+      if(!wasSelected){
+        cell.classList.add('selected');
+        haptic('select');
+        const v = parseFloat(cell.dataset.value);
+        toast(`${cell.dataset.sector} · ${v >= 0 ? '+' : ''}${v}% momentum`, {icon: v >= 0 ? '📈' : '📉'});
+      } else {
+        haptic('tap');
+      }
+    });
+  });
+}
+
+/* ============ 3D EARTH (MARKET MAP) ============ */
+const GLOBAL_HUBS = [
+  {id:'mumbai', name:'NSE / BSE', city:'Mumbai', country:'India', flag:'🇮🇳', lat:19.0760, lon:72.8777, color:0xff9900, hex:'#ff9900', vol:'₹3.8 Lakh Cr', status:'Active Monitored', tz:'IST (UTC+5:30)', market:'IN', topStocks:['RELIANCE', 'TATASTEEL', 'INFY', 'HDFCBANK', 'SWIGGY', 'ATHER']},
+  {id:'newyork', name:'NYSE / NASDAQ', city:'New York', country:'USA', flag:'🇺🇸', lat:40.7128, lon:-74.0060, color:0x3fd8ff, hex:'#3fd8ff', vol:'$46.2 Billion', status:'High Liquidity', tz:'EST (UTC-5)', market:'US', topStocks:['AAPL', 'NVDA', 'TSLA', 'MSFT', 'AMZN', 'GOOGL']},
+  {id:'london', name:'LSE', city:'London', country:'UK', flag:'🇬🇧', lat:51.5074, lon:-0.1278, color:0x4ade80, hex:'#4ade80', vol:'£6.8 Billion', status:'Active Flow', tz:'GMT (UTC+0)', market:'US', topStocks:['HSBC', 'BP', 'SHEL', 'AZN', 'GSK']},
+  {id:'tokyo', name:'TSE', city:'Tokyo', country:'Japan', flag:'🇯🇵', lat:35.6762, lon:139.6503, color:0xff6b5e, hex:'#ff6b5e', vol:'¥3.1 Trillion', status:'Active Flow', tz:'JST (UTC+9)', market:'US', topStocks:['SONY', 'TOYOTA', 'NINTENDO', 'KEYENCE']},
+  {id:'singapore', name:'SGX', city:'Singapore', country:'Singapore', flag:'🇸🇬', lat:1.3521, lon:103.8198, color:0x22d3ee, hex:'#22d3ee', vol:'S$1.6 Billion', status:'High Volume', tz:'SGT (UTC+8)', market:'US', topStocks:['DBS', 'OCBC', 'UOB', 'SINGTEL']},
+  {id:'hongkong', name:'HKEX', city:'Hong Kong', country:'China', flag:'🇭🇰', lat:22.3193, lon:114.1694, color:0xfbbf24, hex:'#fbbf24', vol:'HK$98 Billion', status:'Active Flow', tz:'HKT (UTC+8)', market:'US', topStocks:['TENCENT', 'BABA', 'MEITUAN', 'BJD']},
+  {id:'frankfurt', name:'FWB', city:'Frankfurt', country:'Germany', flag:'🇩🇪', lat:50.1109, lon:8.6821, color:0x818cf8, hex:'#818cf8', vol:'€4.5 Billion', status:'European Core', tz:'CET (UTC+1)', market:'US', topStocks:['SAP', 'SIEMENS', 'ALLIANZ', 'BMW']},
+  {id:'sydney', name:'ASX', city:'Sydney', country:'Australia', flag:'🇦🇺', lat:-33.8688, lon:151.2093, color:0xc084fc, hex:'#c084fc', vol:'A$3.2 Billion', status:'Pacific Session', tz:'AEST (UTC+10)', market:'US', topStocks:['BHP', 'CBA', 'CSL', 'MQG']}
+];
+
+function latLonToVector3(lat, lon, radius){
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+     radius * Math.cos(phi),
+     radius * Math.sin(phi) * Math.sin(theta)
+  );
+}
+
+function initEarth(canvasId){
+  const canvas = document.getElementById(canvasId || 'earth-canvas');
+  if(!canvas || typeof THREE === 'undefined') return;
+
+  // Cleanup any old listeners if re-run
+  if(canvas._earthCleanup) canvas._earthCleanup();
+
+  const container = canvas.parentElement || document.body;
+  const initW = Math.max(canvas.clientWidth || container.clientWidth || 800, 300);
+  const initH = Math.max(canvas.clientHeight || container.clientHeight || 480, 300);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, initW / initH, 0.1, 1000);
+  camera.position.set(0, 0.4, 3.4);
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(initW, initH, false);
+  renderer.setClearColor(0x000000, 0);
+
+  const globeRadius = 1.15;
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+
+  // Focus initially tilted to highlight Indian Ocean / Asia / Europe corridor
+  globeGroup.rotation.y = 1.35;
+  globeGroup.rotation.x = 0.25;
+
+  // 1. Dark core sphere with atmospheric sheen
+  const sphereGeo = new THREE.SphereGeometry(globeRadius, 48, 48);
+  const sphereMat = new THREE.MeshPhongMaterial({
+    color: 0x060b14,
+    emissive: 0x040810,
+    shininess: 25,
+    specular: 0x1a3350,
+  });
+  const coreSphere = new THREE.Mesh(sphereGeo, sphereMat);
+  globeGroup.add(coreSphere);
+
+  // 2. Wireframe grid rings (lat/long grid)
+  const wireGeo = new THREE.SphereGeometry(globeRadius * 1.002, 28, 28);
+  const wireMat = new THREE.MeshBasicMaterial({
+    color: 0x1a2e4c,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.28
+  });
+  const wireSphere = new THREE.Mesh(wireGeo, wireMat);
+  globeGroup.add(wireSphere);
+
+  // 3. Glowing Outer Atmosphere Halo
+  const atmosGeo = new THREE.SphereGeometry(globeRadius * 1.04, 36, 36);
+  const atmosMat = new THREE.MeshBasicMaterial({
+    color: 0x2277bb,
+    transparent: true,
+    opacity: 0.10,
+    side: THREE.BackSide
+  });
+  const atmosSphere = new THREE.Mesh(atmosGeo, atmosMat);
+  globeGroup.add(atmosSphere);
+
+  // 4. Continental Market Particles on globe surface
+  const pCount = 1400;
+  const pPos = new Float32Array(pCount * 3);
+  for(let i = 0; i < pCount; i++){
+    // Cluster particles slightly more towards northern hemisphere where major exchanges sit
+    const u = Math.random();
+    const v = Math.pow(Math.random(), 0.85);
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    const r = globeRadius * (1.004 + Math.random() * 0.015);
+    pPos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
+    pPos[i*3 + 1] = r * Math.cos(phi);
+    pPos[i*3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: 0x3b82f6,
+    size: 0.022,
+    transparent: true,
+    opacity: 0.65
+  });
+  const particles = new THREE.Points(pGeo, pMat);
+  globeGroup.add(particles);
+
+  // 5. Exchange Hub Beacons & Pulsing Rings
+  const hubMeshes = [];
+  const pulseRings = [];
+
+  GLOBAL_HUBS.forEach(hub => {
+    const pos = latLonToVector3(hub.lat, hub.lon, globeRadius);
+    const normal = pos.clone().normalize();
+
+    // Hub Base Sphere
+    const beaconGeo = new THREE.SphereGeometry(0.045, 16, 16);
+    const beaconMat = new THREE.MeshBasicMaterial({color: hub.color});
+    const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+    beacon.position.copy(pos);
+    beacon.userData = { hubId: hub.id };
+    globeGroup.add(beacon);
+
+    // Hub Vertical Pillar Ray
+    const rayHeight = hub.id === 'mumbai' ? 0.28 : 0.20;
+    const rayGeo = new THREE.CylinderGeometry(0.008, 0.008, rayHeight, 8);
+    const rayMat = new THREE.MeshBasicMaterial({color: hub.color, transparent: true, opacity: 0.85});
+    const ray = new THREE.Mesh(rayGeo, rayMat);
+    ray.position.copy(pos.clone().add(normal.clone().multiplyScalar(rayHeight / 2)));
+    ray.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
+    ray.userData = { hubId: hub.id };
+    globeGroup.add(ray);
+
+    // Hub Pulsing Ring on surface
+    const ringGeo = new THREE.RingGeometry(0.025, 0.055, 24);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: hub.color,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(pos.clone().add(normal.clone().multiplyScalar(0.005)));
+    ring.lookAt(pos.clone().add(normal));
+    ring.userData = { hubId: hub.id };
+    globeGroup.add(ring);
+
+    pulseRings.push({mesh: ring, baseScale: 1, currentScale: 1 + Math.random(), speed: 0.015 + Math.random()*0.01});
+    hubMeshes.push({hub, mesh: beacon, ray, ring, pos});
+  });
+
+  // 6. 3D Trade Flow Curves between Exchanges
+  const routes = [
+    ['mumbai', 'newyork'],
+    ['mumbai', 'london'],
+    ['mumbai', 'singapore'],
+    ['london', 'newyork'],
+    ['london', 'frankfurt'],
+    ['tokyo', 'newyork'],
+    ['singapore', 'tokyo'],
+    ['singapore', 'sydney'],
+    ['hongkong', 'london']
+  ];
+
+  const routeCurves = [];
+  routes.forEach(([srcId, dstId]) => {
+    const src = GLOBAL_HUBS.find(h => h.id === srcId);
+    const dst = GLOBAL_HUBS.find(h => h.id === dstId);
+    if(!src || !dst) return;
+
+    const p1 = latLonToVector3(src.lat, src.lon, globeRadius);
+    const p2 = latLonToVector3(dst.lat, dst.lon, globeRadius);
+
+    // Elevation for the arc mid-point
+    const mid = p1.clone().add(p2).multiplyScalar(0.5);
+    const dist = p1.distanceTo(p2);
+    const midLen = globeRadius + Math.min(dist * 0.38, 0.55);
+    mid.normalize().multiplyScalar(midLen);
+
+    const curve = new THREE.QuadraticBezierCurve3(p1, mid, p2);
+    const pts = curve.getPoints(36);
+    const arcGeo = new THREE.BufferGeometry().setFromPoints(pts);
+    const arcMat = new THREE.LineBasicMaterial({
+      color: src.id === 'mumbai' ? 0xffaa00 : 0x3fd8ff,
+      transparent: true,
+      opacity: src.id === 'mumbai' ? 0.65 : 0.35
+    });
+    const arcLine = new THREE.Line(arcGeo, arcMat);
+    globeGroup.add(arcLine);
+
+    // Traveling flow packet
+    const packetGeo = new THREE.SphereGeometry(0.016, 8, 8);
+    const packetMat = new THREE.MeshBasicMaterial({color: 0xffffff});
+    const packet = new THREE.Mesh(packetGeo, packetMat);
+    globeGroup.add(packet);
+
+    routeCurves.push({curve, packet, progress: Math.random(), speed: 0.005 + Math.random()*0.006});
+  });
+
+  // Lighting
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  dirLight.position.set(4, 3, 5);
+  scene.add(dirLight);
+
+  const ambLight = new THREE.AmbientLight(0x223355, 0.9);
+  scene.add(ambLight);
+
+  // Render Hub Status Grid Cards in HTML
+  const hubGrid = document.getElementById('earth-hub-grid');
+  if(hubGrid){
+    hubGrid.innerHTML = GLOBAL_HUBS.map((h, idx) => `
+      <div class="glass" style="padding:14px 16px;border-radius:var(--r-md);display:flex;flex-direction:column;gap:8px;border:1px solid ${h.id==='mumbai' ? 'rgba(255,153,0,0.45)' : 'var(--edge)'};background:${h.id==='mumbai' ? 'rgba(255,153,0,0.06)' : 'var(--glass)'};transition:all .2s;cursor:pointer" onclick="window.focusEarthHub('${h.id}', true)" data-hub="${h.id}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px">
+            <span>${h.flag}</span> <span>${h.name}</span>
+          </span>
+          <span class="pill" style="font-size:11px;padding:3px 9px;color:${h.hex};border-color:${h.hex}44">${h.city}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px">
+          <span style="font-size:12px;color:var(--muted)">Est. Daily Vol:</span>
+          <span class="mono" style="font-size:13px;font-weight:600;color:var(--text)">${h.vol}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)">
+          <span style="font-size:11.5px;color:var(--faint)">${h.tz}</span>
+          <button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11.5px;border-radius:6px">Inspect Node ⤢</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Interactive Orbit Controls & 3D Raycasting
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let prevX = 0, prevY = 0;
+  let velX = 0, velY = 0;
+  let targetRotY = null;
+  let targetRotX = null;
+  const raycaster = new THREE.Raycaster();
+  const mouseVec = new THREE.Vector2();
+
+  function onPointerDown(e){
+    isDragging = true;
+    targetRotY = null;
+    targetRotX = null;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    startX = prevX = clientX;
+    startY = prevY = clientY;
+    velX = 0;
+    velY = 0;
+    canvas.style.cursor = 'grabbing';
+  }
+
+  function onPointerMove(e){
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    if(isDragging){
+      const dx = clientX - prevX;
+      const dy = clientY - prevY;
+      velX = dx * 0.005;
+      velY = dy * 0.005;
+      globeGroup.rotation.y += velX;
+      globeGroup.rotation.x = Math.max(-1.1, Math.min(1.1, globeGroup.rotation.x + velY));
+      prevX = clientX;
+      prevY = clientY;
+    } else {
+      // Hover detection to highlight cursor
+      const rect = canvas.getBoundingClientRect();
+      mouseVec.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouseVec.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouseVec, camera);
+
+      const targets = [];
+      hubMeshes.forEach(h => { targets.push(h.mesh); targets.push(h.ray); targets.push(h.ring); });
+      const hits = raycaster.intersectObjects(targets);
+      canvas.style.cursor = hits.length > 0 ? 'pointer' : 'grab';
+    }
+  }
+
+  function onPointerUp(e){
+    const clientX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || prevX);
+    const clientY = e.changedTouches ? e.changedTouches[0].clientY : (e.clientY || prevY);
+    const moved = Math.hypot(clientX - startX, clientY - startY);
+
+    isDragging = false;
+    canvas.style.cursor = 'grab';
+
+    // Click threshold check
+    if(moved < 8){
+      const rect = canvas.getBoundingClientRect();
+      mouseVec.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouseVec.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouseVec, camera);
+
+      const targets = [];
+      hubMeshes.forEach(h => { targets.push(h.mesh); targets.push(h.ray); targets.push(h.ring); });
+      const hits = raycaster.intersectObjects(targets);
+
+      if(hits.length > 0){
+        const hitHubId = hits[0].object.userData.hubId;
+        if(hitHubId){
+          openHubModal(hitHubId);
+        }
+      }
+    }
+  }
+
+  function onWheel(e){
+    e.preventDefault();
+    camera.position.z = Math.max(1.8, Math.min(4.4, camera.position.z + e.deltaY * 0.002));
+  }
+
+  canvas.addEventListener('mousedown', onPointerDown);
+  window.addEventListener('mousemove', onPointerMove);
+  window.addEventListener('mouseup', onPointerUp);
+  canvas.addEventListener('touchstart', onPointerDown, {passive:true});
+  window.addEventListener('touchmove', onPointerMove, {passive:true});
+  window.addEventListener('touchend', onPointerUp);
+  canvas.addEventListener('wheel', onWheel, {passive:false});
+
+  // Global focus function callable from cards or 3D nodes
+  window.focusEarthHub = function(hubId, openModal = false){
+    const hub = GLOBAL_HUBS.find(h => h.id === hubId);
+    if(!hub) return;
+    const lonRad = (hub.lon * Math.PI) / 180;
+    const latRad = (hub.lat * Math.PI) / 180;
+    targetRotY = -lonRad - Math.PI / 2;
+    targetRotX = latRad * 0.55;
+    haptic('select');
+    toast(`Focusing on ${hub.name} (${hub.city})`, {icon: hub.flag});
+    if(openModal){
+      openHubModal(hubId);
+    }
+  };
+
+  window.resetEarthView = function(){
+    targetRotY = 1.35;
+    targetRotX = 0.25;
+    camera.position.set(0, 0.4, 3.4);
+    haptic('tap');
+  };
+
+  function checkResize(){
+    const cw = canvas.clientWidth || container.clientWidth || 0;
+    const ch = canvas.clientHeight || container.clientHeight || 0;
+    if(cw > 40 && ch > 40){
+      const aspect = cw / ch;
+      if(canvas.width !== cw || canvas.height !== ch || Math.abs(camera.aspect - aspect) > 0.005){
+        camera.aspect = aspect;
+        camera.updateProjectionMatrix();
+        renderer.setSize(cw, ch, false);
+      }
+    }
+  }
+
+  window.resizeEarth = checkResize;
+
+  // Animation Loop
+  let reqId;
+  function animate(){
+    reqId = requestAnimationFrame(animate);
+
+    // Auto-detect visibility / resize whenever container becomes visible
+    checkResize();
+
+    // Smooth rotation or target tweening
+    if(targetRotY !== null && targetRotX !== null){
+      globeGroup.rotation.y += (targetRotY - globeGroup.rotation.y) * 0.08;
+      globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.08;
+      if(Math.abs(targetRotY - globeGroup.rotation.y) < 0.002){
+        targetRotY = null;
+        targetRotX = null;
+      }
+    } else if(!isDragging){
+      // Inertia decay
+      velX *= 0.94;
+      velY *= 0.94;
+      globeGroup.rotation.y += velX;
+      globeGroup.rotation.x = Math.max(-1.1, Math.min(1.1, globeGroup.rotation.x + velY));
+
+      // Slow background spin
+      globeGroup.rotation.y += 0.0012;
+    }
+
+    // Animate radar rings
+    pulseRings.forEach(r => {
+      r.currentScale += r.speed;
+      if(r.currentScale > 2.2){
+        r.currentScale = 0.8;
+      }
+      r.mesh.scale.set(r.currentScale, r.currentScale, 1);
+      r.mesh.material.opacity = Math.max(0, 1 - (r.currentScale - 0.8) / 1.4);
+    });
+
+    // Animate trade packets along routes
+    routeCurves.forEach(rc => {
+      rc.progress = (rc.progress + rc.speed) % 1;
+      const pt = rc.curve.getPointAt(rc.progress);
+      rc.packet.position.copy(pt);
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  canvas._earthCleanup = () => {
+    cancelAnimationFrame(reqId);
+    canvas.removeEventListener('mousedown', onPointerDown);
+    window.removeEventListener('mousemove', onPointerMove);
+    window.removeEventListener('mouseup', onPointerUp);
+    canvas.removeEventListener('touchstart', onPointerDown);
+    window.removeEventListener('touchmove', onPointerMove);
+    window.removeEventListener('touchend', onPointerUp);
+    canvas.removeEventListener('wheel', onWheel);
+  };
+}
+
+/* ============ CHARTS ============ */
+function initCharts(){
+  // Candlestick chart
+  const ctx = document.getElementById('candlestick-chart');
+  if(ctx){
+    const data = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      datasets: [{
+        label: 'NIFTY 50',
+        data: [
+          {x:0, open:18200, high:18400, low:18150, close:18350},
+          {x:1, open:18350, high:18500, low:18300, close:18450},
+          {x:2, open:18450, high:18600, low:18400, close:18550},
+          {x:3, open:18550, high:18750, low:18500, close:18700},
+          {x:4, open:18700, high:18850, low:18650, close:18800}
+        ],
+        borderColor: '#ff9900',
+        backgroundColor: 'rgba(255, 153, 0, 0.1)',
+        borderWidth: 2
+      }]
+    };
+
+    new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {legend: {display: true, labels: {color: '#f2f3f5'}}}
+      }
+    });
+  }
+
+  // Volume chart
+  const volCtx = document.getElementById('volume-chart');
+  if(volCtx){
+    new Chart(volCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [{
+          label: 'Volume (M)',
+          data: [120, 135, 142, 155, 165],
+          backgroundColor: 'rgba(255, 153, 0, 0.6)',
+          borderColor: '#ff9900'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+  }
+
+  // RSI chart
+  const rsiCtx = document.getElementById('rsi-chart');
+  if(rsiCtx){
+    new Chart(rsiCtx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [{
+          label: 'RSI(14)',
+          data: [45, 52, 58, 65, 72],
+          borderColor: '#3fd8ff',
+          backgroundColor: 'rgba(63, 216, 255, 0.1)',
+          tension: 0.4
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+  }
+
+  // MACD chart
+  const macdCtx = document.getElementById('macd-chart');
+  if(macdCtx){
+    new Chart(macdCtx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [
+          {
+            label: 'MACD',
+            data: [10, 15, 18, 22, 25],
+            borderColor: '#ff9900'
+          },
+          {
+            label: 'Signal',
+            data: [12, 14, 17, 20, 24],
+            borderColor: '#3fd8ff'
+          }
+        ]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+  }
+}
+
+/* ============ PRESENTATION MODE ============ */
+function initPresentation(){
+  const btn = document.getElementById('presentation-btn');
+  const mode = document.getElementById('presentation-mode');
+
+  btn.addEventListener('click', () => {
+    mode.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Generate presentation content
+    const grid = document.getElementById('presentation-grid');
+    grid.innerHTML = SECTORS.map(sector => 
+      `<div class="presentation-card">
+        <div style="font-size:24px;font-weight:700;color:var(--amber)">${sector}</div>
+        <div style="color:var(--muted);margin-top:8px">Unusual activity detected</div>
+        <div style="color:var(--green);margin-top:12px;font-weight:600">+${(Math.random()*20).toFixed(1)}%</div>
+      </div>`
+    ).join('');
+  });
+
+  mode.addEventListener('click', e => {
+    if(e.key === 'Escape' || e.target === mode){
+      haptic('tap');
+      mode.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && mode.classList.contains('active')){
+      haptic('tap');
+      mode.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+}
+
+/* ============ LIVE SIGNALS ============ */
+const SCAN_STOCKS = ['RELIANCE','TATASTEEL','INFY','HDFC','ICICI','SBIN','BAJAJ'];
+
+// Shown only when the backend isn't connected / user isn't signed in.
+const DEMO_SIGNALS = [
+  {symbol:'TATA MOTORS', ticker:'TATAMOTORS', mult:4.7, change:2.4, todayVol:'13.2M', avgVol:'2.8M', demo:true},
+  {symbol:'HDFC BANK', ticker:'HDFCBANK', mult:3.4, change:1.1, todayVol:'9.1M', avgVol:'2.7M', demo:true},
+  {symbol:'RELIANCE', ticker:'RELIANCE', mult:2.1, change:-0.8, todayVol:'6.4M', avgVol:'3.0M', demo:true},
+];
+
+let SIGNALS = DEMO_SIGNALS;
+
+function fmtVol(n){
+  if(n >= 1e7) return (n/1e7).toFixed(1)+'Cr';
+  if(n >= 1e5) return (n/1e5).toFixed(1)+'L';
+  if(n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return String(n);
+}
+
+async function initSignals(){
+  const scanList = document.getElementById('scan-list');
+  const signalList = document.getElementById('signal-list');
+  if(!scanList || !signalList) return;
+
+  scanList.innerHTML = SCAN_STOCKS.map((s,i) =>
+    `<div class="scan-row"><span>${s}</span><span class="scan-status" data-i="${i}">queued</span></div>`
+  ).join('');
+
+  const live = BACKEND_CONFIGURED() && (IS_LOCAL_BACKEND() || !!authToken);
+
+  if(!live){
+    // Demo mode: fake the scan progression, show sample signals.
+    SCAN_STOCKS.forEach((s,i) => {
+      const el = scanList.querySelector(`[data-i="${i}"]`);
+      setTimeout(() => { if(el){ el.textContent = 'scanning…'; el.className = 'scan-status active'; } }, i*220);
+      setTimeout(() => {
+        if(el){ el.textContent = '✓ done'; el.className = 'scan-status done'; }
+        haptic('tap');
+      }, i*220 + 900);
+    });
+    setTimeout(() => haptic('success'), SCAN_STOCKS.length*220 + 950);
+    SIGNALS = DEMO_SIGNALS;
+    renderSignalCards();
+    return;
+  }
+
+  // Live mode: call POST /analyze for each watched stock, in order, updating the
+  // scan list as each one comes back.
+  const results = [];
+  for(let i = 0; i < SCAN_STOCKS.length; i++){
+    const el = scanList.querySelector(`[data-i="${i}"]`);
+    if(el){ el.textContent = 'scanning…'; el.className = 'scan-status active'; }
+    const r = await analyzeStock(SCAN_STOCKS[i], 'IN');
+    const ok = r && !r.error;
+    if(el){ el.textContent = ok ? '✓ done' : '✕ error'; el.className = 'scan-status ' + (ok ? 'done' : ''); }
+    haptic(ok ? 'tap' : 'error');
+    if(ok) results.push(r);
+  }
+  haptic('success');
+
+  const flagged = results.filter(r => r.flagged);
+  SIGNALS = flagged.length ? flagged.map(r => ({
+    symbol: r.ticker.replace('.NS',''),
+    ticker: r.ticker,
+    mult: r.metrics.volume_ratio,
+    change: r.metrics.price_change_pct,
+    todayVol: fmtVol(r.metrics.today_volume),
+    avgVol: fmtVol(r.metrics.avg_30d_volume),
+    explanation: r.explanation,
+    demo: false,
+  })) : DEMO_SIGNALS;
+
+  renderSignalCards();
+}
+
+function renderSignalCards(){
+  const signalList = document.getElementById('signal-list');
+  if(!signalList) return;
+  signalList.innerHTML = SIGNALS.map((sig, i) =>
+    `<div class="signal-card glass" data-i="${i}">
+      <div>
+        <div style="font-weight:600">${sig.symbol}</div>
+        <div style="color:var(--muted);font-size:12.5px">${sig.ticker}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="signal-mult">${sig.mult}×</div>
+        <div style="font-size:12px;color:var(--muted)">normal volume</div>
+      </div>
+    </div>`
+  ).join('');
+
+  signalList.querySelectorAll('.signal-card').forEach(card => {
+    card.addEventListener('click', () => {
+      haptic('select');
+      openDetail(SIGNALS[parseInt(card.dataset.i)]);
+    });
+  });
+}
+
+/* ============ SEARCH ANY TICKER (India or US) ============ */
+// Shared by the search card in the Live Signals pane and the ⌘K command palette,
+// so there's exactly one code path for "look up a stock the user typed."
+async function runTickerSearch(rawTicker, market, ui){
+  const ticker = (rawTicker || '').trim().toUpperCase().replace(/\.NS$/,'');
+  market = (market === 'US') ? 'US' : 'IN';
+  const setStatus = (msg, cls) => {
+    if(!ui || !ui.status) return;
+    ui.status.textContent = msg || '';
+    ui.status.className = cls ? cls : '';
+  };
+
+  if(!ticker){ setStatus('Type a ticker symbol first.', 'err'); return; }
+
+  if(ui && ui.btn){ ui.btn.disabled = true; ui.btn.textContent = 'Analyzing…'; }
+  setStatus(`Checking ${ticker}${market === 'IN' ? '.NS' : ''} on ${market === 'IN' ? 'the NSE' : 'US markets'}…`, 'pending');
+  haptic('tap');
+
+  const live = BACKEND_CONFIGURED() && (IS_LOCAL_BACKEND() || !!authToken);
+
+  try{
+    if(!live){
+      // No backend deployed yet, or not signed in — never a dead end. Show a clearly
+      // labeled sample result using the same detail overlay, so the flow is always
+      // demoable, and say exactly what would make it real.
+      await new Promise(r => setTimeout(r, 550));
+      const sig = {
+        symbol: ticker,
+        ticker: market === 'IN' ? ticker + '.NS' : ticker,
+        market,
+        mult: +(1.2 + Math.random()*4.3).toFixed(1),
+        change: +((Math.random()*6)-3).toFixed(2),
+        todayVol: fmtVol(Math.round(2e6 + Math.random()*12e6)),
+        avgVol: fmtVol(Math.round(2e6 + Math.random()*3e6)),
+        demo: true,
+      };
+      setStatus('');
+      openDetail(sig);
+      toast(BACKEND_CONFIGURED() ? `Sign in for a real lookup on ${ticker}` : `Sample data for ${ticker} — deploy the backend for real lookups`, {icon:'ℹ️'});
+      return;
+    }
+
+    const r = await analyzeStock(ticker, market);
+    if(!r || r.error){
+      const msg = (r && r.error) || `Couldn't reach the backend for '${ticker}'.`;
+      setStatus(msg, 'err');
+      haptic('error');
+      toast(msg, {icon:'⚠️'});
+      return;
+    }
+
+    setStatus('');
+    const sig = {
+      symbol: r.ticker.replace('.NS',''),
+      ticker: r.ticker,
+      market: r.market,
+      mult: r.metrics.volume_ratio,
+      change: r.metrics.price_change_pct,
+      todayVol: fmtVol(r.metrics.today_volume),
+      avgVol: fmtVol(r.metrics.avg_30d_volume),
+      explanation: r.explanation,
+      demo: false,
+    };
+    toast(
+      r.flagged ? `${sig.symbol}: unusual volume detected (${sig.mult}×)` : `${sig.symbol}: volume looks normal (${sig.mult}×)`,
+      {icon: r.flagged ? '🟠' : '✓'}
+    );
+    haptic(r.flagged ? 'warn' : 'success');
+    openDetail(sig);
+  } catch(err){
+    console.error('[runTickerSearch]', err);
+    setStatus(`Something went wrong looking up '${ticker}'.`, 'err');
+    haptic('error');
+  } finally {
+    if(ui && ui.btn){ ui.btn.disabled = false; ui.btn.textContent = 'Analyze'; }
+  }
+}
+
+function initTickerSearch(){
+  const form = q => document.getElementById(q);
+  const searchForm = form('ticker-search-form');
+  if(!searchForm) return;
+  const input = form('ticker-search-input');
+  const status = form('ticker-search-status');
+  const btn = form('ticker-search-btn');
+  let market = 'IN';
+
+  document.querySelectorAll('#ticker-search-card .market-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('#ticker-search-card .market-opt').forEach(x => x.classList.remove('on'));
+      opt.classList.add('on');
+      market = opt.dataset.market;
+      haptic('tap');
+      input.focus();
+    });
+  });
+
+  searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runTickerSearch(input.value, market, {btn, status});
+  });
+}
+
+/* ============ STOCK DETAIL OVERLAY ============ */
+let detailChartInstance = null;
+let currentSig = null;
+
+function openDetail(sig){
+  currentSig = sig;
+  const overlay = document.getElementById('detail-overlay');
+  document.getElementById('detail-symbol').textContent = sig.symbol;
+  document.getElementById('detail-name').textContent = sig.ticker;
+  document.getElementById('detail-mult').textContent = sig.mult + '×';
+  document.getElementById('detail-vol').textContent = sig.todayVol;
+  document.getElementById('detail-change').textContent = (sig.change >= 0 ? '+' : '') + sig.change + '%';
+  document.getElementById('detail-change').style.color = sig.change >= 0 ? 'var(--green)' : 'var(--red)';
+
+  const aiBox = document.getElementById('detail-ai-text');
+  if(sig.explanation){
+    aiBox.textContent = sig.explanation;
+    document.getElementById('detail-ai-source').textContent = 'Amazon Bedrock (Claude) · live';
+  } else {
+    aiBox.textContent = "The volume is running well above the 30-day average, which often lines up with fresh investor interest — earnings expectations, a broader sector move, or news that hasn't fully priced in yet.";
+    document.getElementById('detail-ai-source').textContent = sig.demo === false ? 'Amazon Bedrock (Claude)' : 'Sample explanation · connect your backend for live analysis';
+  }
+
+  document.getElementById('detail-news').textContent = 'No fresh headlines flagged for this stock in the last 24 hours — the volume move isn\'t yet explained by public news.';
+  if(BACKEND_CONFIGURED() && (IS_LOCAL_BACKEND() || authToken)){
+    fetchHistory(sig.ticker).then(h => {
+      if(h && h.history && h.history.length){
+        document.getElementById('detail-news').innerHTML =
+          `<div style="font-size:13px;color:var(--muted);margin-bottom:8px">Past flags for this stock:</div>` +
+          h.history.slice(0,5).map(item =>
+            `<div class="scan-row"><span>${new Date(item.timestamp).toLocaleString()}</span><span class="scan-status done">${item.metrics?.volume_ratio || '?'}×</span></div>`
+          ).join('');
+      }
+    });
+  }
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  const panel = overlay.querySelector('.detail-panel');
+  panel.classList.remove('pop-in');
+  void panel.offsetWidth; // restart animation
+  panel.classList.add('pop-in');
+  switchDetailTab('overview');
+}
+
+function closeDetail(){
+  haptic('select');
+  document.getElementById('detail-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+/* ============ 3D GLOBE EXCHANGE DETAIL MODAL ============ */
+function openHubModal(hubId){
+  const hub = GLOBAL_HUBS.find(h => h.id === hubId);
+  if(!hub) return;
+
+  document.getElementById('hub-modal-flag').textContent = hub.flag;
+  document.getElementById('hub-modal-name').textContent = hub.name;
+  document.getElementById('hub-modal-location').textContent = `${hub.city}, ${hub.country} · ${hub.tz}`;
+  document.getElementById('hub-modal-status').innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${hub.hex};margin-right:6px"></span> ${hub.status.toUpperCase()}`;
+  document.getElementById('hub-modal-vol').textContent = `Est. Daily Vol: ${hub.vol}`;
+
+  // Render Stock Pills
+  const stocksBox = document.getElementById('hub-modal-stocks');
+  stocksBox.innerHTML = (hub.topStocks || []).map(sym => 
+    `<button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)" onclick="closeHubModal(); runTickerSearch('${sym}', '${hub.market || 'IN'}')">🔍 ${sym}</button>`
+  ).join('');
+
+  // Render Connected Routes
+  const routesBox = document.getElementById('hub-modal-routes');
+  routesBox.innerHTML = `Active institutional liquidity corridors connected to <b>${hub.city}</b> (${hub.name}). AI anomaly monitors run 24/7 on these routes.`;
+
+  // Action Button
+  const actBtn = document.getElementById('hub-modal-action-btn');
+  const leadStock = (hub.topStocks && hub.topStocks[0]) || 'RELIANCE';
+  actBtn.textContent = `Analyze ${leadStock} Anomaly →`;
+  actBtn.onclick = () => {
+    closeHubModal();
+    runTickerSearch(leadStock, hub.market || 'IN');
+  };
+
+  const overlay = document.getElementById('hub-modal-overlay');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  const panel = overlay.querySelector('.detail-panel');
+  if(panel){
+    panel.classList.remove('pop-in');
+    void panel.offsetWidth;
+    panel.classList.add('pop-in');
+  }
+  haptic('select');
+}
+
+function closeHubModal(){
+  haptic('select');
+  document.getElementById('hub-modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function switchDetailTab(tab){
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
+  document.querySelectorAll('.detail-tabpane').forEach(p => p.classList.toggle('on', p.dataset.tabpane === tab));
+
+  if(tab === 'charts' && !detailChartInstance){
+    const ctx = document.getElementById('detail-chart');
+    if(ctx && typeof Chart !== 'undefined'){
+      detailChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Array.from({length:30}, (_,i) => i+1 === 30 ? 'Today' : `${30-i}d ago`),
+          datasets: [{
+            label: 'Volume',
+            data: Array.from({length:29}, () => 2 + Math.random()*1.5).concat([13.2]),
+            backgroundColor: (c) => c.dataIndex === 29 ? '#ff9900' : 'rgba(255,153,0,.25)'
+          }]
+        },
+        options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+      });
+    }
+  }
+}
+
+function initDetailOverlay(){
+  document.getElementById('detail-close').addEventListener('click', closeDetail);
+  document.getElementById('detail-overlay').addEventListener('click', e => {
+    if(e.target.id === 'detail-overlay') closeDetail();
+  });
+  document.querySelectorAll('.detail-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchDetailTab(tab.dataset.tab));
+  });
+  document.getElementById('detail-add-watchlist').addEventListener('click', (e) => {
+    const symbol = document.getElementById('detail-name').textContent;
+    const btn = e.currentTarget;
+    if(!watchlist.find(w => w.symbol === symbol)){
+      watchlist.push({symbol, price: 1000 + Math.random()*2000, change: (Math.random()*6-3)});
+      initWatchlist();
+      const stat = document.getElementById('stat-watchlist');
+      if(stat) stat.textContent = watchlist.length;
+      haptic('success');
+      toast(`${symbol} added to watchlist`);
+    } else {
+      haptic('warn');
+      btn.classList.remove('shake');
+      void btn.offsetWidth;
+      btn.classList.add('shake');
+      toast(`${symbol} is already on your watchlist`, {icon:'⚠️'});
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && document.getElementById('detail-overlay').classList.contains('active')) closeDetail();
+  });
+}
+
+/* ============ SETTINGS TOGGLES ============ */
+function initSettingsSwitches(){
+  document.querySelectorAll('#pane-settings input[type="checkbox"]').forEach(input => {
+    input.addEventListener('change', () => {
+      haptic(input.checked ? 'select' : 'warn');
+      toast(`${input.dataset.label || 'Setting'} ${input.checked ? 'on' : 'off'}`, {icon: input.checked ? '✓' : '○'});
+    });
+  });
+}
+
+/* ============ LANDING ============ */
+function enterApp(){
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('shell').classList.add('on');
+  go('dashboard');
+}
+
+function initLanding(){
+  document.getElementById('landing-explore').addEventListener('click', enterApp);
+  document.getElementById('landing-cta-top').addEventListener('click', enterApp);
+  document.getElementById('landing-watch').addEventListener('click', () => { go('signals'); enterApp(); });
+  setTimeout(() => initEarth('landing-earth'), 100);
+}
+
+/* ========================================================
+   SPATIAL HAND GESTURE MODE
+   --------------------------------------------------------
+   Design goal: this NEVER breaks Normal Mode. Every failure
+   path (library load, camera permission, camera drop, a bad
+   frame, an exception mid-loop) is caught and routed back to
+   a working Normal Mode instead of freezing or crashing the
+   app. Gestures don't run their own business logic — a pinch
+   just performs a real .click() on whatever DOM element is
+   under the virtual cursor, and drags reuse the exact same
+   watchlist array + render() as mouse drag. Same app state,
+   two input layers.
+   ======================================================== */
+const SpatialMode = (() => {
+
+  // ---- tunables -------------------------------------------------
+  const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+  const VISION_WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm';
+  const VISION_MODULE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs';
+  const LOAD_TIMEOUT_MS = 12000;
+
+  const PINCH_ENTER = 0.42;      // normalized thumb-index distance to start a pinch
+  const PINCH_EXIT = 0.58;       // ...and to release it (hysteresis avoids flicker)
+  const FINGER_EXT_RATIO = 1.15; // tip-vs-mcp distance ratio to call a finger "extended"
+  const CLICK_MOVE_PX = 42;      // pinch counts as a click only if cursor moved < this
+  const HOLD_MENU_MS = 550;      // open-palm hold time before the radial menu appears
+  const SWIPE_MIN_PX = 130;      // min horizontal travel within the window to count as a swipe
+  const SWIPE_WINDOW_MS = 260;
+  const SWIPE_COOLDOWN_MS = 650;
+  const TWO_FINGER_HOLD_MS = 450;
+  const CURSOR_SMOOTH = 0.32;    // exponential smoothing factor (higher = snappier)
+  const HAND_LOST_MS = 900;      // how long with no hand before we say "searching"
+  const CAMERA_RECOVER_ATTEMPTS = 2;
+
+  // ---- state ------------------------------------------------------
+  let active = false;
+  let landmarker = null;
+  let video = null;
+  let stream = null;
+  let rafId = null;
+  let lastVideoTime = -1;
+  let firstEnter = true;
+
+  let cx = innerWidth / 2, cy = innerHeight / 2;   // raw target
+  let sx = cx, sy = cy;                            // smoothed/rendered
+  let lastHandTs = 0;
+  let pinching = false;
+  let pinchDownAt = 0, pinchDownX = 0, pinchDownY = 0, pinchDownEl = null;
+  let dragItem = null, dragFromIndex = -1;
+  let openPalmSince = 0;
+  let twoFingerSince = 0;
+  let lastSwipeAt = 0;
+  let swipeBuf = []; // {x,t}
+  let currentGesture = 'none';
+  let menuOpen = false;
+  let cameraRecoverTries = 0;
+  let els = {};
+
+  function q(id){ return document.getElementById(id); }
+
+  function cacheEls(){
+    els = {
+      video: q('spatial-video'),
+      cursorLayer: q('spatial-cursor-layer'),
+      cursor: q('spatial-cursor'),
+      hoverRing: q('spatial-hover-ring'),
+      hud: q('spatial-hud'),
+      hudCamera: q('spatial-hud-camera'),
+      hudHand: q('spatial-hud-hand'),
+      hudGesture: q('spatial-hud-gesture'),
+      hudExit: q('spatial-hud-exit'),
+      palmMenu: q('spatial-palm-menu'),
+      scrim: q('spatial-scrim'),
+      scrimRing: q('spatial-scrim-ring'),
+      scrimStatus: q('spatial-scrim-status'),
+      scrimSub: q('spatial-scrim-sub'),
+      scrimActions: q('spatial-scrim-actions'),
+      permModal: q('spatial-permission-modal'),
+      permReason: q('spatial-permission-reason'),
+      toggleBtn: q('spatial-toggle-btn'),
+      toggleLabel: q('spatial-toggle-label'),
+    };
+  }
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  function withTimeout(promise, ms, label){
+    return Promise.race([
+      promise,
+      new Promise((_, rej) => setTimeout(() => rej(new Error((label || 'operation') + ' timed out')), ms))
+    ]);
+  }
+
+  // ---- scrim / cinematic messaging --------------------------------
+  function showScrim(status, sub, actionsHtml){
+    els.scrim.classList.add('on');
+    els.scrimStatus.textContent = status || '';
+    els.scrimSub.textContent = sub || '';
+    els.scrimActions.innerHTML = actionsHtml || '';
+  }
+  function hideScrim(){ els.scrim.classList.remove('on'); }
+  function showPermissionModal(reason){
+    els.permReason.textContent = reason || 'Camera permission is required for hand tracking.';
+    els.permModal.classList.add('on');
+  }
+  function hidePermissionModal(){ els.permModal.classList.remove('on'); }
+
+  // ---- entry point --------------------------------------------------
+  async function enter(){
+    if(active) return;
+    cacheEls();
+    hidePermissionModal();
+    showScrim('INITIALIZING SPATIAL INTERFACE', 'Loading hand-tracking model…');
+
+    try{
+      await ensureLandmarker();
+      showScrim('REQUESTING CAMERA ACCESS', 'Allow camera access in the browser prompt.');
+      await startCamera();
+      showScrim('CAMERA CONNECTED', 'Starting hand tracking…');
+      await sleep(350);
+      showScrim('HAND TRACKING ACTIVE', 'Show your hand to the camera.');
+      await sleep(500);
+    }catch(err){
+      console.warn('[SpatialMode] enter failed, falling back to Normal Mode:', err);
+      cleanupCamera();
+      hideScrim();
+      showPermissionModal(explainError(err));
+      return; // Normal Mode keeps working untouched.
+    }
+
+    hideScrim();
+    active = true;
+    setToggleUI(true);
+    els.cursorLayer.classList.add('on');
+    els.hud.classList.add('on');
+    document.body.classList.add('spatial-active');
+    lastHandTs = performance.now();
+    cameraRecoverTries = 0;
+    loop();
+
+    if(firstEnter && localStorage.getItem('signal_spatial_calibrated') !== '1'){
+      firstEnter = false;
+      runCalibration().catch(() => {}); // calibration NEVER blocks entry; it layers on top
+    } else {
+      firstEnter = false;
+    }
+  }
+
+  function explainError(err){
+    const msg = (err && err.message) || String(err);
+    if(/Permission denied|NotAllowedError/i.test(msg)) return 'Camera permission is required for hand tracking.';
+    if(/NotFoundError|no camera/i.test(msg)) return 'No camera was found on this device.';
+    if(/timed out/i.test(msg)) return 'The hand-tracking model took too long to load. Check your connection.';
+    return 'Spatial Mode couldn\'t start (' + msg + ').';
+  }
+
+  async function ensureLandmarker(){
+    if(landmarker) return landmarker;
+    const mod = await withTimeout(import(VISION_MODULE_URL), LOAD_TIMEOUT_MS, 'Loading hand-tracking library');
+    const { HandLandmarker, FilesetResolver } = mod;
+    const vision = await withTimeout(FilesetResolver.forVisionTasks(VISION_WASM_URL), LOAD_TIMEOUT_MS, 'Loading vision runtime');
+    try{
+      landmarker = await HandLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: MODEL_URL, delegate: 'GPU' },
+        runningMode: 'VIDEO',
+        numHands: 1,
+      });
+    }catch(gpuErr){
+      // GPU delegate can fail on some devices/drivers — fall back to CPU rather than give up.
+      console.warn('[SpatialMode] GPU delegate failed, retrying on CPU', gpuErr);
+      landmarker = await HandLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: MODEL_URL, delegate: 'CPU' },
+        runningMode: 'VIDEO',
+        numHands: 1,
+      });
+    }
+    return landmarker;
+  }
+
+  async function startCamera(){
+    video = els.video;
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 480, facingMode: 'user' },
+      audio: false
+    });
+    video.srcObject = stream;
+    await withTimeout(video.play(), 6000, 'Starting camera preview');
+    stream.getVideoTracks()[0].addEventListener('ended', onCameraLost);
+  }
+
+  function cleanupCamera(){
+    try{ if(stream) stream.getTracks().forEach(t => t.stop()); }catch(e){}
+    stream = null;
+  }
+
+  async function onCameraLost(){
+    if(!active) return;
+    showScrim('HAND TRACKING INTERRUPTED', 'Attempting to reconnect the camera…');
+    els.hudCamera.textContent = 'RECONNECTING';
+    cancelAnimationFrame(rafId);
+    cleanupCamera();
+    if(cameraRecoverTries < CAMERA_RECOVER_ATTEMPTS){
+      cameraRecoverTries++;
+      try{
+        await sleep(500);
+        await startCamera();
+        hideScrim();
+        loop();
+        return;
+      }catch(e){ /* fall through to full exit below */ }
+    }
+    showScrim('SPATIAL MODE UNAVAILABLE', 'Returning to Normal Mode.', '');
+    await sleep(1100);
+    exit();
+  }
+
+  // ---- exit -----------------------------------------------------------
+  function exit(){
+    if(!active){ hideScrim(); hidePermissionModal(); return; }
+    active = false;
+    cancelAnimationFrame(rafId);
+    cleanupCamera();
+    hideScrim();
+    els.cursorLayer.classList.remove('on');
+    els.hud.classList.remove('on');
+    els.palmMenu.classList.remove('on');
+    menuOpen = false;
+    document.body.classList.remove('spatial-active');
+    setToggleUI(false);
+    clearHoverHighlight();
+    toast('Returned to Normal Mode', {icon:'🖱️'});
+  }
+
+  function setToggleUI(on){
+    if(!els.toggleBtn) return;
+    els.toggleBtn.classList.toggle('active', on);
+    els.toggleLabel.textContent = on ? 'Exit Spatial Mode' : 'Enter Spatial Mode';
+  }
+
+  // ---- main loop --------------------------------------------------------
+  function loop(){
+    if(!active) return;
+    rafId = requestAnimationFrame(loop);
+    try{
+      processFrame();
+    }catch(err){
+      // A single bad frame must never kill Spatial Mode or freeze the app.
+      console.warn('[SpatialMode] frame error (ignored):', err);
+    }
+  }
+
+  function processFrame(){
+    if(!video || video.readyState < 2) return;
+    if(video.currentTime === lastVideoTime) return; // no new frame yet
+    lastVideoTime = video.currentTime;
+
+    const now = performance.now();
+    const result = landmarker.detectForVideo(video, now);
+    const hands = result && result.landmarks;
+
+    if(hands && hands.length){
+      lastHandTs = now;
+      handleLandmarks(hands[0], now);
+      setHud('hand', 'DETECTED', false);
+      els.cursor.classList.remove('searching');
+    } else {
+      if(now - lastHandTs > HAND_LOST_MS){
+        setHud('hand', 'SEARCHING…', true);
+        els.cursor.classList.add('searching');
+        currentGesture = 'none';
+        setHud('gesture', '—', false);
+        swipeBuf = [];
+      }
+    }
+    setHud('camera', 'CONNECTED', false);
+    renderCursor();
+  }
+
+  function setHud(which, text, warn){
+    const map = { camera: els.hudCamera, hand: els.hudHand, gesture: els.hudGesture };
+    const el = map[which];
+    if(!el) return;
+    el.textContent = text;
+    el.closest('.sh-row')?.classList.toggle('warn', !!warn);
+  }
+
+  // ---- landmark geometry helpers ----------------------------------------
+  const WRIST=0, THUMB_TIP=4, THUMB_MCP=2, IDX_TIP=8, IDX_PIP=6, IDX_MCP=5,
+        MID_TIP=12, MID_PIP=10, MID_MCP=9, RING_TIP=16, RING_PIP=14, RING_MCP=13,
+        PINKY_TIP=20, PINKY_PIP=18, PINKY_MCP=17;
+
+  function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+
+  function fingerUp(lm, tip, mcp){
+    return dist(lm[WRIST], lm[tip]) > dist(lm[WRIST], lm[mcp]) * FINGER_EXT_RATIO;
+  }
+
+  function handleLandmarks(lm, now){
+    const scale = Math.max(dist(lm[WRIST], lm[MID_MCP]), 0.001);
+
+    // 1) cursor target — mirrored horizontally so hand-right = screen-right
+    const target = lm[IDX_TIP];
+    cx = (1 - target.x) * innerWidth;
+    cy = target.y * innerHeight;
+
+    // 2) pinch distance (thumb tip <-> index tip), scale-normalized, with hysteresis
+    const pinchDist = dist(lm[THUMB_TIP], lm[IDX_TIP]) / scale;
+    const wasPinching = pinching;
+    if(!pinching && pinchDist < PINCH_ENTER) pinching = true;
+    else if(pinching && pinchDist > PINCH_EXIT) pinching = false;
+
+    // 3) finger extension pattern (for point / open palm / two-finger / fist)
+    const idx = fingerUp(lm, IDX_TIP, IDX_MCP);
+    const mid = fingerUp(lm, MID_TIP, MID_MCP);
+    const ring = fingerUp(lm, RING_TIP, RING_MCP);
+    const pinky = fingerUp(lm, PINKY_TIP, PINKY_MCP);
+    const extCount = [idx,mid,ring,pinky].filter(Boolean).length;
+
+    let gesture = 'point';
+    if(pinching) gesture = 'pinch';
+    else if(extCount === 4) gesture = 'open_palm';
+    else if(extCount === 0) gesture = 'fist';
+    else if(idx && mid && !ring && !pinky) gesture = 'two_finger';
+    else if(idx && !mid && !ring && !pinky) gesture = 'point';
+    currentGesture = gesture;
+    setHud('gesture', gesture.replace('_',' ').toUpperCase(), false);
+
+    // pinch transitions
+    if(pinching && !wasPinching) onPinchDown();
+    if(pinching) onPinchActive();
+    if(!pinching && wasPinching) onPinchUp();
+
+    // open-palm hold -> radial menu
+    if(gesture === 'open_palm'){
+      if(!openPalmSince) openPalmSince = now;
+      if(!menuOpen && now - openPalmSince > HOLD_MENU_MS) openPalmMenu();
+    } else {
+      openPalmSince = 0;
+    }
+
+    // two-finger hold -> cycle detail tabs (only meaningful with detail overlay open)
+    if(gesture === 'two_finger'){
+      if(!twoFingerSince) twoFingerSince = now;
+      if(now - twoFingerSince > TWO_FINGER_HOLD_MS){
+        cycleDetailTab();
+        twoFingerSince = now + 100000; // fire once per hold; resets when gesture changes
+      }
+    } else {
+      twoFingerSince = 0;
+    }
+
+    // swipe detection — only while hand is open/pointing and not pinching/dragging
+    if(!pinching && !dragItem && (gesture === 'point' || gesture === 'open_palm')){
+      swipeBuf.push({x: cx, t: now});
+      while(swipeBuf.length && now - swipeBuf[0].t > SWIPE_WINDOW_MS) swipeBuf.shift();
+      if(swipeBuf.length > 2 && now - lastSwipeAt > SWIPE_COOLDOWN_MS){
+        const dx = swipeBuf[swipeBuf.length-1].x - swipeBuf[0].x;
+        if(Math.abs(dx) > SWIPE_MIN_PX){
+          lastSwipeAt = now;
+          swipeBuf = [];
+          triggerSwipe(dx > 0 ? 'right' : 'left');
+        }
+      }
+    } else {
+      swipeBuf = [];
+    }
+  }
+
+  // ---- pinch -> click / drag ------------------------------------------
+  function elementAtCursor(){
+    const el = document.elementFromPoint(sx, sy);
+    if(!el) return null;
+    return el.closest('button, a, input, .navlink, .signal-card, .watch-item, .heatmap-cell, .cmd-item, .detail-tab, .close-x, [data-pane], label') || el;
+  }
+
+  function onPinchDown(){
+    pinchDownAt = performance.now();
+    pinchDownX = sx; pinchDownY = sy;
+    pinchDownEl = elementAtCursor();
+    els.cursor.classList.add('pinching');
+    if(pinchDownEl){
+      const watchItem = pinchDownEl.closest ? pinchDownEl.closest('.watch-item') : null;
+      if(watchItem && watchItem.closest('#watchlist-container')){
+        dragItem = watchItem;
+        dragFromIndex = parseInt(watchItem.dataset.index, 10);
+        dragItem.classList.add('dragging');
+      }
+    }
+  }
+
+  function onPinchActive(){
+    if(dragItem){
+      const under = document.elementFromPoint(sx, sy);
+      const overItem = under && under.closest ? under.closest('.watch-item') : null;
+      if(overItem && overItem !== dragItem && overItem.closest('#watchlist-container')){
+        const toIndex = parseInt(overItem.dataset.index, 10);
+        if(!Number.isNaN(toIndex) && toIndex !== dragFromIndex){
+          reorderWatchlistSpatial(dragFromIndex, toIndex);
+          dragFromIndex = toIndex;
+        }
+      }
+    }
+  }
+
+  function onPinchUp(){
+    els.cursor.classList.remove('pinching');
+    const moved = Math.hypot(sx - pinchDownX, sy - pinchDownY);
+
+    if(dragItem){
+      dragItem.classList.remove('dragging');
+      dragItem.classList.add('drop-settle');
+      setTimeout(() => dragItem && dragItem.classList.remove('drop-settle'), 320);
+      dragItem = null;
+      dragFromIndex = -1;
+      haptic('drop');
+    } else if(pinchDownEl && moved < CLICK_MOVE_PX){
+      spawnRipple(els.cursor, sx, sy, true);
+      try{ pinchDownEl.click(); }catch(e){ console.warn('[SpatialMode] click failed', e); }
+      haptic('select');
+    }
+    pinchDownEl = null;
+  }
+
+  function reorderWatchlistSpatial(fromIndex, toIndex){
+    if(fromIndex < 0 || fromIndex >= watchlist.length) return;
+    const [item] = watchlist.splice(fromIndex, 1);
+    watchlist.splice(toIndex, 0, item);
+    initWatchlist(); // same render path the mouse drag path uses — one source of truth
+    haptic('drag');
+  }
+
+  // ---- swipe / two-finger actions ---------------------------------------
+  function triggerSwipe(direction){
+    spawnStreak(direction);
+    const overlay = q('detail-overlay');
+    if(overlay && overlay.classList.contains('active') && typeof currentSig !== 'undefined' && currentSig){
+      const i = SIGNALS.findIndex(s => s.ticker === currentSig.ticker);
+      if(i !== -1){
+        const next = direction === 'left'
+          ? SIGNALS[(i + 1) % SIGNALS.length]
+          : SIGNALS[(i - 1 + SIGNALS.length) % SIGNALS.length];
+        openDetail(next);
+        return;
+      }
+    }
+    // Not inspecting a signal — use swipes to move between rail panes instead.
+    const panes = ['dashboard','signals','watchlist','heatmap','earth','charts','settings'];
+    const active = document.querySelector('.navlink.on');
+    const cur = active ? panes.indexOf(active.dataset.pane) : 0;
+    if(cur === -1) return;
+    const next = direction === 'left' ? (cur+1) % panes.length : (cur-1+panes.length) % panes.length;
+    go(panes[next]);
+    document.querySelectorAll('.navlink').forEach(l => l.classList.toggle('on', l.dataset.pane === panes[next]));
+  }
+
+  function cycleDetailTab(){
+    const overlay = q('detail-overlay');
+    if(!overlay || !overlay.classList.contains('active')) return;
+    const tabs = Array.from(document.querySelectorAll('.detail-tab'));
+    if(!tabs.length) return;
+    const curIdx = tabs.findIndex(t => t.classList.contains('on'));
+    const next = tabs[(curIdx + 1) % tabs.length];
+    haptic('select');
+    next.click();
+  }
+
+  // ---- open-palm radial menu ---------------------------------------------
+  function openPalmMenu(){
+    menuOpen = true;
+    haptic('warn');
+    els.palmMenu.style.left = sx + 'px';
+    els.palmMenu.style.top = sy + 'px';
+    els.palmMenu.classList.add('on');
+  }
+  function closePalmMenu(){ menuOpen = false; els.palmMenu.classList.remove('on'); }
+
+  function wirePalmMenu(){
+    els.palmMenu = q('spatial-palm-menu');
+    els.palmMenu.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-act]');
+      if(!btn) return;
+      const act = btn.dataset.act;
+      closePalmMenu();
+      if(act === 'exit') exit();
+      else if(act === 'recalibrate') recalibrate();
+      // 'resume' just closes the menu
+    });
+  }
+
+  // ---- calibration (one-time, always skippable — never blocks) -----------
+  function runCalibration(){
+    return new Promise((resolve) => {
+      const steps = [
+        {status:'CALIBRATING SPATIAL INPUT', sub:'Point at the center of the screen.', ms:2600},
+        {status:'CALIBRATING', sub:'Move your hand left, then right.', ms:3200},
+        {status:'CALIBRATING', sub:'Pinch your thumb and index finger once.', ms:3200},
+        {status:'CALIBRATION COMPLETE', sub:'You\'re ready to use Spatial Mode.', ms:1400},
+      ];
+      let i = 0;
+      const skipHtml = '<span class="skip-link" id="spatial-calib-skip">Skip calibration</span>';
+      function next(){
+        if(!active){ resolve(); return; } // aborted mid-way, e.g. camera dropped
+        if(i >= steps.length){
+          hideScrim();
+          localStorage.setItem('signal_spatial_calibrated', '1');
+          resolve();
+          return;
+        }
+        const step = steps[i++];
+        showScrim(step.status, step.sub, skipHtml);
+        const skipBtn = q('spatial-calib-skip');
+        if(skipBtn) skipBtn.onclick = () => { localStorage.setItem('signal_spatial_calibrated','1'); hideScrim(); resolve(); };
+        setTimeout(next, step.ms);
+      }
+      next();
+    });
+  }
+  function recalibrate(){
+    localStorage.removeItem('signal_spatial_calibrated');
+    if(active) runCalibration().catch(()=>{});
+    else toast('Spatial calibration will run next time you enter Spatial Mode', {icon:'⟲'});
+  }
+
+  // ---- rendering -----------------------------------------------------------
+  function renderCursor(){
+    sx += (cx - sx) * CURSOR_SMOOTH;
+    sy += (cy - sy) * CURSOR_SMOOTH;
+    els.cursor.style.left = sx + 'px';
+    els.cursor.style.top = sy + 'px';
+
+    if(dragItem){ clearHoverHighlight(); return; }
+    const el = elementAtCursor();
+    highlightHover(el);
+  }
+
+  let hoveredEl = null;
+  function highlightHover(el){
+    if(el === hoveredEl) { positionHoverRing(el); return; }
+    clearHoverHighlight();
+    hoveredEl = (el && el.nodeType === 1 && el !== document.body && el !== document.documentElement) ? el : null;
+    if(hoveredEl){
+      hoveredEl.classList.add('spatial-hit');
+      els.cursor.classList.add('hover-target');
+      positionHoverRing(hoveredEl);
+      els.hoverRing.style.opacity = '1';
+    } else {
+      els.cursor.classList.remove('hover-target');
+      els.hoverRing.style.opacity = '0';
+    }
+  }
+  function positionHoverRing(el){
+    if(!el || !el.getBoundingClientRect) return;
+    const r = el.getBoundingClientRect();
+    els.hoverRing.style.left = r.left + 'px';
+    els.hoverRing.style.top = r.top + 'px';
+    els.hoverRing.style.width = r.width + 'px';
+    els.hoverRing.style.height = r.height + 'px';
+  }
+  function clearHoverHighlight(){
+    if(hoveredEl){ hoveredEl.classList.remove('spatial-hit'); hoveredEl = null; }
+    els.cursor && els.cursor.classList.remove('hover-target');
+    if(els.hoverRing) els.hoverRing.style.opacity = '0';
+  }
+
+  function spawnRipple(anchorEl, x, y){
+    const r = document.createElement('div');
+    r.className = 'spatial-ripple';
+    r.style.left = x + 'px'; r.style.top = y + 'px';
+    els.cursorLayer.appendChild(r);
+    setTimeout(() => r.remove(), 520);
+  }
+  function spawnStreak(direction){
+    const s = document.createElement('div');
+    s.className = 'spatial-streak';
+    const width = 220;
+    s.style.width = width + 'px';
+    s.style.left = (direction === 'left' ? sx - width : sx) + 'px';
+    s.style.top = sy + 'px';
+    els.cursorLayer.appendChild(s);
+    setTimeout(() => s.remove(), 420);
+  }
+
+  // ---- wiring ---------------------------------------------------------
+  function init(){
+    cacheEls();
+    if(!els.toggleBtn) return;
+
+    // Feature-detect up front. If unsupported, disable the button but never
+    // touch Normal Mode.
+    const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.isSecureContext !== false);
+    if(!supported){
+      els.toggleBtn.disabled = true;
+      els.toggleBtn.title = 'Spatial Mode needs camera access, which this browser/context does not support here.';
+    }
+
+    els.toggleBtn.addEventListener('click', () => { active ? exit() : enter(); });
+    els.hudExit.addEventListener('click', exit);
+    q('spatial-retry-btn').addEventListener('click', () => { hidePermissionModal(); enter(); });
+    q('spatial-continue-normal-btn').addEventListener('click', hidePermissionModal);
+    q('settings-recalibrate-btn').addEventListener('click', recalibrate);
+    wirePalmMenu();
+
+    window.addEventListener('resize', () => { cx = Math.min(cx, innerWidth); cy = Math.min(cy, innerHeight); });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && active) exit();
+    });
+    // If the tab is hidden, pause the camera loop rather than let it run blind.
+    document.addEventListener('visibilitychange', () => {
+      if(document.hidden && active) cancelAnimationFrame(rafId);
+      else if(!document.hidden && active) loop();
+    });
+  }
+
+  return { init, enter, exit, recalibrate, isActive: () => active };
+})();
+
+/* ============ NEXT-SCAN CLOCK ============ */
+function initClock(){
+  const el = document.getElementById('stat-clock');
+  if(!el) return;
+  let seconds = 7*60 + 34;
+  setInterval(() => {
+    seconds = seconds <= 0 ? 15*60 : seconds - 1;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0');
+    const s = String(seconds%60).padStart(2,'0');
+    el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+/* ============ INIT ============ */
+async function init(){
+  parseAuthFromHash();
+  
+  const storedUser = getStoredUser();
+  const token = localStorage.getItem('rf_id_token') || sessionStorage.getItem('rf_id_token');
+
+  if(storedUser && token){
+    try {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if(res.ok){
+        const data = await res.json();
+        loginUser(data.user, true, token);
+      } else {
+        signOut();
+      }
+    } catch(e) {
+      // Local offline fallback
+      loginUser(storedUser, true, token);
+    }
+  } else {
+    // Show login page first by default
+    document.getElementById('auth-screen').classList.remove('hidden');
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('shell').classList.remove('on');
+    updateAuthUI();
+  }
+
+  document.querySelectorAll('.navlink').forEach(link => {
+    link.addEventListener('click', () => go(link.dataset.pane));
+  });
+
+  initGlobalFeedback();
+  initCommandPalette();
+  initWatchlist();
+  initHeatmap();
+  initPresentation();
+  initSignals();
+  initTickerSearch();
+  initDetailOverlay();
+  initClock();
+  initLanding();
+  initSettingsSwitches();
+  initCountUps();
+  initGoldParticles();
+  SpatialMode.init();
+
+  // Charts are eager (hidden panes still have measurable canvas height via CSS)
+  setTimeout(() => {
+    initCharts();
+  }, 100);
+
+  // Earth globe is lazy — initialised the first time the user navigates to the
+  // Market Map pane so that the canvas has its real CSS dimensions available.
+  window._earthInited = false;
+}
+
+/* ============ DYNAMIC MOVING GOLD PARTICLES BACKGROUND ============ */
+function initGoldParticles(){
+  const canvas = document.getElementById('gold-particles-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const mouse = { x: null, y: null, radius: 150 };
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+  window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  const particleCount = Math.min(140, Math.floor((width * height) / 8500));
+  const particles = [];
+
+  const goldColors = [
+    'rgba(255, 184, 0, ',    // Vibrant Gold
+    'rgba(255, 215, 0, ',    // Pure Gold
+    'rgba(245, 158, 11, ',   // Warm Amber Gold
+    'rgba(251, 191, 36, ',   // Bright Champagne Gold
+    'rgba(255, 248, 225, '   // Glowing Light Gold
+  ];
+
+  class Particle {
+    constructor() {
+      this.reset(true);
+    }
+
+    reset(initial = false) {
+      this.x = Math.random() * width;
+      this.y = initial ? Math.random() * height : height + 10;
+      this.size = Math.random() * 2.8 + 0.9;
+      this.speedY = -(Math.random() * 0.65 + 0.15);
+      this.speedX = (Math.random() - 0.5) * 0.35;
+      this.colorBase = goldColors[Math.floor(Math.random() * goldColors.length)];
+      this.alpha = Math.random() * 0.55 + 0.25;
+      this.pulseSpeed = Math.random() * 0.02 + 0.005;
+      this.pulseAngle = Math.random() * Math.PI * 2;
+      this.swaySpeed = Math.random() * 0.015 + 0.005;
+      this.swayAngle = Math.random() * Math.PI * 2;
+    }
+
+    update() {
+      this.pulseAngle += this.pulseSpeed;
+      this.swayAngle += this.swaySpeed;
+
+      this.x += this.speedX + Math.sin(this.swayAngle) * 0.45;
+      this.y += this.speedY;
+
+      // Interactive mouse attraction/push
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          this.x -= (dx / dist) * force * 2.8;
+          this.y -= (dy / dist) * force * 2.8;
+        }
+      }
+
+      if (this.y < -20 || this.x < -20 || this.x > width + 20) {
+        this.reset(false);
+      }
+    }
+
+    draw() {
+      const currentAlpha = Math.max(0.12, Math.min(0.95, this.alpha + Math.sin(this.pulseAngle) * 0.25));
+      ctx.save();
+
+      // Glowing radial aura
+      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3.8);
+      grad.addColorStop(0, this.colorBase + currentAlpha + ')');
+      grad.addColorStop(0.4, this.colorBase + (currentAlpha * 0.45) + ')');
+      grad.addColorStop(1, this.colorBase + '0)');
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 3.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bright solid core point
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+
+  function drawConnections() {
+    const maxDist = 115;
+    for (let a = 0; a < particles.length; a++) {
+      for (let b = a + 1; b < particles.length; b++) {
+        const dx = particles[a].x - particles[b].x;
+        const dy = particles[a].y - particles[b].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < maxDist) {
+          const opacity = (1 - dist / maxDist) * 0.22;
+          ctx.strokeStyle = `rgba(255, 191, 0, ${opacity})`;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    drawConnections();
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
