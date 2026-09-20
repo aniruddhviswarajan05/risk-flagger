@@ -1,0 +1,1490 @@
+[
+  {
+    "ticker": "MSFT",
+    "market": "US",
+    "timestamp": "2026-09-19T18:48:02.183666+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 39544100,
+      "avg_30d_volume": 25718091.18,
+      "volume_ratio": 1.54,
+      "threshold": 3.0,
+      "today_close": 493.78,
+      "price_change_pct": -0.8
+    },
+    "explanation": "Volume is within normal parameters (1.54x vs 30-day baseline)."
+  },
+  {
+    "ticker": "AAPL",
+    "market": "US",
+    "timestamp": "2026-09-19T18:47:39.723198+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 86433100,
+      "avg_30d_volume": 46006447.06,
+      "volume_ratio": 1.88,
+      "threshold": 3.0,
+      "today_close": 336.13,
+      "price_change_pct": -0.26
+    },
+    "explanation": "Volume is within normal parameters (1.88x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:25.961728+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:25.282655+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:25.083947+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:24.296755+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:23.323285+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:23.146363+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:45:22.972388+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:32.061138+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:31.328999+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:31.148171+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:30.336098+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:29.532269+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:29.332094+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:37:28.916438+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ATHHER.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:22:52.366032+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 11138780,
+      "avg_30d_volume": 1989067.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 150.12,
+      "price_change_pct": 6.8
+    },
+    "explanation": "ATHHER.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 6.8% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "BAJAJ.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:32.458363+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 7847995,
+      "avg_30d_volume": 2531611.0,
+      "volume_ratio": 3.1,
+      "threshold": 3.0,
+      "today_close": 865.85,
+      "price_change_pct": 0.95
+    },
+    "explanation": "BAJAJ.NS on the NSE is seeing trading volume 3.1x higher than its 30-day average, while price moved 0.9% up today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:30.882892+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:30.513682+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:29.696164+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:28.460914+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:28.268220+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T18:20:27.968759+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ATHER.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:15:19.656801+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 8282138,
+      "avg_30d_volume": 3943875.0,
+      "volume_ratio": 2.1,
+      "threshold": 3.0,
+      "today_close": 508.55,
+      "price_change_pct": 6.38
+    },
+    "explanation": "Volume is within normal parameters (2.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TSLA",
+    "market": "US",
+    "timestamp": "2026-09-19T17:11:49.170076+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 51819200,
+      "avg_30d_volume": 36413926.47,
+      "volume_ratio": 1.42,
+      "threshold": 3.0,
+      "today_close": 364.27,
+      "price_change_pct": -0.53
+    },
+    "explanation": "Volume is within normal parameters (1.42x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SWIGGY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:11:48.957819+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 20140282,
+      "avg_30d_volume": 20417117.5,
+      "volume_ratio": 0.99,
+      "threshold": 3.0,
+      "today_close": 273.05,
+      "price_change_pct": -1.25
+    },
+    "explanation": "Volume is within normal parameters (0.99x vs 30-day baseline)."
+  },
+  {
+    "ticker": "AAPL",
+    "market": "US",
+    "timestamp": "2026-09-19T17:11:48.785127+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 86433100,
+      "avg_30d_volume": 46006447.06,
+      "volume_ratio": 1.88,
+      "threshold": 3.0,
+      "today_close": 336.13,
+      "price_change_pct": -0.26
+    },
+    "explanation": "Volume is within normal parameters (1.88x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:11:48.572583+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "ICICI.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:11:48.255696+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 4678438,
+      "avg_30d_volume": 2752022.0,
+      "volume_ratio": 1.7,
+      "threshold": 3.0,
+      "today_close": 808.37,
+      "price_change_pct": -2.62
+    },
+    "explanation": "Volume is within normal parameters (1.7x vs 30-day baseline)."
+  },
+  {
+    "ticker": "HDFC.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:11:45.762937+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": true,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 6799810,
+      "avg_30d_volume": 1214251.0,
+      "volume_ratio": 5.6,
+      "threshold": 3.0,
+      "today_close": 430.22,
+      "price_change_pct": -0.9
+    },
+    "explanation": "HDFC.NS on the NSE is seeing trading volume 5.6x higher than its 30-day average, while price moved 0.9% down today. An abrupt surge of this magnitude usually indicates either institutional repositioning, significant block deals, or speculation ahead of pending news. Before acting, investors should review regulatory filings, recent exchange disclosures, or corporate press releases to determine whether fundamental news backs the activity."
+  },
+  {
+    "ticker": "ATHER.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T17:11:43.692095+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "simulated": true,
+    "metrics": {
+      "today_volume": 8282138,
+      "avg_30d_volume": 3943875.0,
+      "volume_ratio": 2.1,
+      "threshold": 3.0,
+      "today_close": 508.55,
+      "price_change_pct": 6.38
+    },
+    "explanation": "Volume is within normal parameters (2.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:53:11.023271+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:53:08.830854+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:53:08.597977+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:53:08.319711+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:48:25.269181+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:48:23.324437+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:48:23.099663+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:45:19.894387+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:45:17.915908+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:45:17.677710+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:45:17.482727+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:44:13.594577+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:44:12.074702+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:44:11.828013+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:44:11.580280+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:50.789757+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:49.162278+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:48.798379+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:48.443901+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:37.289946+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:35.328896+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:35.126972+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:43:34.873725+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:41:00.589937+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:40:58.346322+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:40:58.141979+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:40:57.908983+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:02:42.985450+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:02:37.681681+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:02:37.488174+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T16:02:37.176847+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T15:55:27.288924+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T15:55:24.917015+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T15:55:24.682312+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T15:55:24.412180+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "AAPL",
+    "market": "US",
+    "timestamp": "2026-09-19T15:50:38.431333+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 86433100,
+      "avg_30d_volume": 46006447.06,
+      "volume_ratio": 1.88,
+      "threshold": 3.0,
+      "today_close": 336.13,
+      "price_change_pct": -0.26
+    },
+    "explanation": "Volume is within normal parameters (1.88x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:23:08.004098+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:23:05.904995+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:23:05.623160+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:23:05.323725+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:20:47.714208+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:20:44.888434+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:20:44.576789+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:20:44.172198+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:15:32.969815+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 996.2,
+      "price_change_pct": 0.76
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:15:26.606183+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1051.4,
+      "price_change_pct": -0.68
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:15:26.261822+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 185.54,
+      "price_change_pct": -0.93
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-19T07:15:25.909893+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1226.4,
+      "price_change_pct": -1.41
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:55:37.655632+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 988.7,
+      "price_change_pct": -0.27
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:55:35.643766+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1058.6,
+      "price_change_pct": -0.13
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:55:35.445574+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 187.29,
+      "price_change_pct": 2.34
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:55:35.158658+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1243.9,
+      "price_change_pct": 0.31
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "AAPL",
+    "market": "US",
+    "timestamp": "2026-09-18T21:44:13.320961+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 86241049,
+      "avg_30d_volume": 46006447.06,
+      "volume_ratio": 1.87,
+      "threshold": 3.0,
+      "today_close": 336.13,
+      "price_change_pct": -0.26
+    },
+    "explanation": "Volume is within normal parameters (1.87x vs 30-day baseline)."
+  },
+  {
+    "ticker": "SBIN.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:43:13.371749+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 5699456,
+      "avg_30d_volume": 8905959.65,
+      "volume_ratio": 0.64,
+      "threshold": 3.0,
+      "today_close": 988.7,
+      "price_change_pct": -0.27
+    },
+    "explanation": "Volume is within normal parameters (0.64x vs 30-day baseline)."
+  },
+  {
+    "ticker": "INFY.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:43:08.909809+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 22124953,
+      "avg_30d_volume": 8001287.91,
+      "volume_ratio": 2.77,
+      "threshold": 3.0,
+      "today_close": 1058.6,
+      "price_change_pct": -0.13
+    },
+    "explanation": "Volume is within normal parameters (2.77x vs 30-day baseline)."
+  },
+  {
+    "ticker": "TATASTEEL.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:43:08.549848+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 29014128,
+      "avg_30d_volume": 26388100.18,
+      "volume_ratio": 1.1,
+      "threshold": 3.0,
+      "today_close": 187.29,
+      "price_change_pct": 2.34
+    },
+    "explanation": "Volume is within normal parameters (1.1x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:43:07.683191+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1243.9,
+      "price_change_pct": 0.31
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "market": "IN",
+    "timestamp": "2026-09-18T21:42:41.431741+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 15122715,
+      "avg_30d_volume": 10736860.21,
+      "volume_ratio": 1.41,
+      "threshold": 3.0,
+      "today_close": 1243.9,
+      "price_change_pct": 0.31
+    },
+    "explanation": "Volume is within normal parameters (1.41x vs 30-day baseline)."
+  },
+  {
+    "ticker": "AAPL",
+    "market": "US",
+    "timestamp": "2026-09-18T21:42:16.687325+00:00",
+    "rule": "VOLUME_SPIKE_ANOMALY",
+    "flagged": false,
+    "metrics": {
+      "today_volume": 86241049,
+      "avg_30d_volume": 46006447.06,
+      "volume_ratio": 1.87,
+      "threshold": 3.0,
+      "today_close": 336.13,
+      "price_change_pct": -0.26
+    },
+    "explanation": "Volume is within normal parameters (1.87x vs 30-day baseline)."
+  }
+]
